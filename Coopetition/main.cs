@@ -23,6 +23,7 @@ namespace Coopetition
 
         private void btnStartRun_Click(object sender, EventArgs e)
         {
+            Environment.outputLog = outputLog;
             new Environment().Run();
         }
     }

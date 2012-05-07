@@ -16,19 +16,24 @@ namespace Coopetition
         public static int row = 1;
         public static int col = 1;
 
+        public static RichTextBox outputLog;
+
         public void Initialization()
         {
             // Generate tasks
+            outputLog.AppendText("Generating Tasks...\n");
             for (int i = 0; i < Constants.NumberOfTasks; i++)
             {
                 TaskPool.Add(new Task(i));
             }
 
             // Generate communities
+            outputLog.AppendText("Generating Communities...\n");
             Community community = new Community(1);
             community.TaskPool = TaskPool;
 
             // Generate web services
+            outputLog.AppendText("Generating " + Constants.NumberOfWebservices + " of Web Services...\n");
             for (int i = 0; i < Constants.NumberOfWebservices; i++)
             {
                 WebService ws = new WebService(i);
@@ -44,6 +49,7 @@ namespace Coopetition
             Communities.Add(community);
 
             // Collaboration Network Initialization
+            outputLog.AppendText("Initializating Collaboration Network...\n");
             InitializeNetworks();
 
             // Computing thresholds and probabilities
@@ -163,6 +169,7 @@ namespace Coopetition
 
             for (int i = 0; i < Constants.NumberOfRuns; i++)
             {
+                outputLog.AppendText("Iteration #" + i + "...\n");
                 excel.CreateExcelFile();
                 row = 1;
                 col = 1;
@@ -170,6 +177,7 @@ namespace Coopetition
                 long ticks = DateTime.Now.Ticks;
                 excel.SaveDocument("coopetition_" + i.ToString() + "_" + ticks + ".xls");
             }
+            outputLog.AppendText("Done!\n");
             MessageBox.Show("Done!");
         }
 
