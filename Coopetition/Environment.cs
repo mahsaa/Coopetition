@@ -77,20 +77,20 @@ namespace Coopetition
 
         public void Simulation()
         {
-            excel.createHeaders(row, col, "CommunityId", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "WebserviceId", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "Webservice_QoS", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "Webservice_GrowthFactor", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "Webservice_Reputation", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "Webservice_NTD", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "Webservice_BankAccount", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "Webservice_Competed", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "Webservice_HasCollaborated", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "Webservice_IsCollaborated", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, col, "cmId", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsId", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsQoS", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsGrowthFactor", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsReputation", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsNTD", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsBankAccount", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsCompeted", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsHasCollaborated", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsIsCollaborated", "A", "B", 2, true, 10, "n");
            // excel.createHeaders(row, ++col, "Webservice_Network", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "Webservice_Task_QoS", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "Webservice_Task_Fee", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "Webservice_ProvidedQoS", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsTaskQoS", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsTaskFee", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsProvidedQoS", "A", "B", 2, true, 10, "n");
 
             for (int j = 0; j < Communities.Count; j++)
             {
@@ -102,6 +102,7 @@ namespace Coopetition
                 for (int i = 0; i < cm.Members.Count; i++)
                 {
                     Community.WebServiceInfo wsInfo = cm.Members[i];
+                    wsInfo.Webservice.BankAccount -= Constants.MembershipFee;
                     // Checking growth factor by web services
                     wsInfo.Webservice.CoopetitionDecision();
                     // Insert CommunityId to the excel file 

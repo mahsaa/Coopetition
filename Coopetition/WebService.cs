@@ -163,7 +163,7 @@ namespace Coopetition
                     CollaborationNetwork net = community.IntraNetworks.Find(delegate(CollaborationNetwork nw) { return nw.Id == this.networkId; });
                     if (net != null)
                     {
-                        Collaborate(task, net, community.Members);
+                        Collaborate(task, net, community);
                     }
                     else
                     {
@@ -173,6 +173,9 @@ namespace Coopetition
                         this.providedQoS = rndQoS;
                         this.hasCollaborated = false;
                         resultQoS = this.providedQoS;
+
+                        community.Members[this.id].NumberOfTasksDone++;
+                        this.bankAccount += task.Fee; // Should be changed based on the provided QoS
                     }
                 }
                 else
@@ -183,12 +186,16 @@ namespace Coopetition
                     this.providedQoS = rndQoS;
                     this.hasCollaborated = false;
                     resultQoS = this.providedQoS;
+
+                    community.Members[this.id].NumberOfTasksDone++;
+                    this.bankAccount += task.Fee; // Should be changed based on the provided QoS
                 }
             }
         }
 
-        private void Collaborate(Task task, CollaborationNetwork network, List<Community.WebServiceInfo> webserviceInfos)
+        private void Collaborate(Task task, CollaborationNetwork network, Community cm)
         {
+            List<Community.WebServiceInfo> webserviceInfos = cm.Members;
             Random rnd = new Random(DateTime.Now.Millisecond);
             double rndPortion = Math.Round(rnd.NextDouble(), 2);
             this.hasCollaborated = true;
@@ -198,6 +205,8 @@ namespace Coopetition
             //    Thread.Sleep(10);
             //}
             this.taskPortionDone = rndPortion;
+            cm.Members[this.id].NumberOfTasksDone++;
+            this.bankAccount += (int)((1 - Constants.CooperationFeePercentage) * task.Fee);
             double networkPortion = 1 - rndPortion;
             int numberOfCollaborators = rnd.Next(1, network.MembersIds.Count); //rnd.Next(1, this.networkId.Count); 
 
@@ -243,6 +252,8 @@ namespace Coopetition
                                     //}
                                     //ws.providedQoS = rndCollabQoS;
                                     ws.providedQoS = Math.Max(0, ws.qos - (Math.Round(rnd.NextDouble(), 2) / Constants.QoSVarianceModifier));
+                                    cm.Members[ws.id].NumberOfTasksDone++;
+                                    ws.bankAccount += (int)((Constants.CooperationFeePercentage / collaborationNetwork.Count) * task.Fee);
                                     networkQoS += ws.providedQoS;
                                 });
 
