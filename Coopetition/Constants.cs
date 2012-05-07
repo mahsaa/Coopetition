@@ -13,7 +13,7 @@ namespace Coopetition
             Collaborate
         }
 
-        public const string BaseDirectory = @"D:\Projects\Thesis\Coopetition\Results\";
+        public const string BaseDirectory = @"C:\Projects\Thesis\Coopetition\Results\";
         public static int NumberOfWebservices = 50;
         public static int NumberOfCommunities = 5;
         public static int NumberOfUsers = 1000;
