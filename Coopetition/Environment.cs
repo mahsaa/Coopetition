@@ -85,6 +85,7 @@ namespace Coopetition
         {
             excel.createHeaders(row, col, "cmId", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsId", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsNetwork", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsQoS", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsGrowthFactor", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsReputation", "A", "B", 2, true, 10, "n");
@@ -115,6 +116,7 @@ namespace Coopetition
                     excel.InsertData(row + 1, col, cm.Id.ToString(), "", "", "");
                     // Insert Webservice data to the excel file
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.Id.ToString(), "", "", "");
+                    excel.InsertData(row + 1, ++col, wsInfo.Webservice.NetworkId.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.QoS.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.GrowthFactor.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.Reputation.ToString(), "", "", "");
