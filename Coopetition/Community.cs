@@ -177,6 +177,10 @@ namespace Coopetition
             int numberOfAcceptingMembers = (int)Math.Ceiling(Constants.AcceptanceProbability * competitiveMembers.Count);
             int numberOfRejectingMembers = competitiveMembers.Count - numberOfAcceptingMembers;
 
+            Environment.outputLog.AppendText("Competetive Members: " + competitiveMembers.Count + "\n");
+            Environment.outputLog.AppendText("Number of Tasks to be done: " + numberOfTasksToBeDone + "\n");
+            Environment.outputLog.AppendText("Number of Accepting Members: " + numberOfAcceptingMembers + "\n");
+
             int numberOfTasksToBeAssigned = Math.Min(numberOfAcceptingMembers, numberOfTasksToBeDone);
             List<Task> notAssignedTasks = taskPool.FindAll(delegate(Task task) { return !(task.Assigned); });
 

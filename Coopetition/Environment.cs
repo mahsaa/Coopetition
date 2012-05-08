@@ -172,6 +172,7 @@ namespace Coopetition
             for (int i = 0; i < Constants.NumberOfRuns; i++)
             {
                 outputLog.AppendText("Iteration #" + i + "...\n");
+                outputLog.ScrollToCaret();
                 excel.CreateExcelFile();
                 row = 1;
                 col = 1;
