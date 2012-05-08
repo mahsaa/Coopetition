@@ -40,19 +40,17 @@ namespace Coopetition
         public Task(int _id)
         {
             id = _id;
-
-            Random rnd = new Random(DateTime.Now.Millisecond);
+            Random rnd = new Random(DateTime.Now.Millisecond);            
             double q = Math.Round(rnd.NextDouble(), 2);
-            Thread.Sleep(10);
-            while (!((Constants.TaskQoS_LowerBound < q) && (q < Constants.TaskQoS_UpperBound)))
-            {
-                q = Math.Round(rnd.NextDouble(), 2);
-                Thread.Sleep(10);
-            }
-            qos = q;
-
+            //Thread.Sleep(10);
+            //while (!((Constants.TaskQoS_LowerBound < q) && (q < Constants.TaskQoS_UpperBound)))
+            //{
+            //    q = Math.Round(rnd.NextDouble(), 2);
+            //    Thread.Sleep(10);
+            //}
+            //qos = q;
+            qos = Constants.TaskQoS_LowerBound + (Constants.TaskQoS_UpperBound - Constants.TaskQoS_LowerBound) * q;        
             fee = rnd.Next(Constants.TaskFee_LowerBound, Constants.TaskFee_UpperBound);
-
             assigned = false;
         }
     }
