@@ -168,7 +168,7 @@ namespace Coopetition
         public void Run()
         {
             Initialization();
-
+            long start = DateTime.Now.Ticks;
             for (int i = 0; i < Constants.NumberOfRuns; i++)
             {
                 outputLog.AppendText("Iteration #" + i + "...\n");
@@ -180,7 +180,10 @@ namespace Coopetition
                 long ticks = DateTime.Now.Ticks;
                 excel.SaveDocument("coopetition_" + i.ToString() + "_" + ticks + ".xls");
             }
+            long end = DateTime.Now.Ticks;
+            outputLog.AppendText("Simulation took: " + (int)((end-start)/10000) + " ms\n");
             outputLog.AppendText("Done!\n");
+            outputLog.ScrollToCaret();
             MessageBox.Show("Done!");
         }
 
