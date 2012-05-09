@@ -148,17 +148,29 @@ namespace Coopetition
         //    }
         //}
 
-        public void CoopetitionDecision()
+        public void CoopetitionDecision(int numberOfRun)
         {
             growthFactor = this.qos * this.reputation;
+            if (this.readyToCompete && numberOfRun > 1)
+            {
+                growthFactor = this.providedQoS * this.reputation;
+
+                // growthFactor *= Math.Abs(((double)(this.bankAccount - Constants.Webservice_DefaultBankAccount) / (numberOfRun * Constants.TaskFee_UpperBound)));
+            }
+
+           // Environment.outputLog.AppendText("WSid: " + this.id + " ,GF: " + growthFactor + ", QoS: " + this.qos + ", rep: " + this.reputation + ", numberofRun: " + numberOfRun + ", bankAccount: " + bankAccount + ", readytc: " + readyToCompete + "\n");
+
             if (growthFactor >= Constants.CompetitionThreshold)
-                readyToCompete = true;
+                readyToCompete = true;            
+
         }
 
         public void StartDoingTask(Task task, Community community)
         {
             if (task != null)
             {
+              //  Environment.outputLog.AppendText("WSid: " + this.id + ", Running Task\n");
+
                 double resultQoS;
                 Random rnd = new Random(DateTime.Now.Millisecond);
                 double rndDecision = rnd.NextDouble();

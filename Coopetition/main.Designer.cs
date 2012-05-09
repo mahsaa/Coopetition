@@ -34,7 +34,7 @@
             // 
             // btnStartRun
             // 
-            this.btnStartRun.Location = new System.Drawing.Point(31, 212);
+            this.btnStartRun.Location = new System.Drawing.Point(31, 429);
             this.btnStartRun.Name = "btnStartRun";
             this.btnStartRun.Size = new System.Drawing.Size(75, 23);
             this.btnStartRun.TabIndex = 0;
@@ -46,7 +46,7 @@
             // 
             this.outputLog.Location = new System.Drawing.Point(31, 25);
             this.outputLog.Name = "outputLog";
-            this.outputLog.Size = new System.Drawing.Size(382, 165);
+            this.outputLog.Size = new System.Drawing.Size(737, 382);
             this.outputLog.TabIndex = 1;
             this.outputLog.Text = "";
             // 
@@ -54,7 +54,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(445, 271);
+            this.ClientSize = new System.Drawing.Size(813, 481);
             this.Controls.Add(this.outputLog);
             this.Controls.Add(this.btnStartRun);
             this.Name = "main";

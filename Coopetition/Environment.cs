@@ -81,7 +81,7 @@ namespace Coopetition
             }
         }
 
-        public void Simulation()
+        public void Simulation(int numberOfRun)
         {
             excel.createHeaders(row, col, "cmId", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsId", "A", "B", 2, true, 10, "n");
@@ -111,7 +111,7 @@ namespace Coopetition
                     Community.WebServiceInfo wsInfo = cm.Members[i];
                     wsInfo.Webservice.BankAccount -= Constants.MembershipFee;
                     // Checking growth factor by web services
-                    wsInfo.Webservice.CoopetitionDecision();
+                    wsInfo.Webservice.CoopetitionDecision(numberOfRun);
                     // Insert CommunityId to the excel file 
                     excel.InsertData(row + 1, col, cm.Id.ToString(), "", "", "");
                     // Insert Webservice data to the excel file
@@ -176,7 +176,7 @@ namespace Coopetition
                 excel.CreateExcelFile();
                 row = 1;
                 col = 1;
-                Simulation();
+                Simulation(i);
                 long ticks = DateTime.Now.Ticks;
                 excel.SaveDocument("coopetition_" + i.ToString() + "_" + ticks + ".xls");
             }
