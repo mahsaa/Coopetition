@@ -39,7 +39,7 @@ namespace Coopetition
 
         public static int Webservice_DefaultBankAccount = 100;
 
-        public static double TaskQoS_LowerBound = 0.01;
+        public static double TaskQoS_LowerBound = 0.5;
         public static double TaskQoS_UpperBound = 0.99;
 
         public static double TaskResponseTime_LowerBound = 0.1;
