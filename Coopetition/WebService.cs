@@ -129,7 +129,6 @@ namespace Coopetition
             //}
             //reputation = rep;
             reputation = Constants.WebserviceReputation_LowerBound + (Constants.WebserviceReputation_UpperBound - Constants.WebserviceReputation_LowerBound) * rep;
-            Environment.outputLog.AppendText("rep: " + reputation + "\n");
 
         }
 
