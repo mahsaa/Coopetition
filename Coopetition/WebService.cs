@@ -99,33 +99,37 @@ namespace Coopetition
 
             Random rnd = new Random(DateTime.Now.Millisecond);
             double q = Math.Round(rnd.NextDouble(), 2);
-            Thread.Sleep(10);
-            while (!((Constants.WebserviceQoS_LowerBound < q) && (q < Constants.WebserviceQoS_UpperBound)))
-            {
-                q = Math.Round(rnd.NextDouble(), 2);
-                Thread.Sleep(10);
-            }
-            qos = q;
+            //Thread.Sleep(10);
+            //while (!((Constants.WebserviceQoS_LowerBound < q) && (q < Constants.WebserviceQoS_UpperBound)))
+            //{
+            //    q = Math.Round(rnd.NextDouble(), 2);
+            //    Thread.Sleep(10);
+            //}
+            //qos = q;
+            qos = Constants.WebserviceQoS_LowerBound + (Constants.WebserviceQoS_UpperBound - Constants.WebserviceQoS_LowerBound) * q;
 
             bankAccount = Constants.Webservice_DefaultBankAccount;
 
             double g = Math.Round(rnd.NextDouble(), 2);
-            Thread.Sleep(10);
-            while (!((Constants.WebserviceGrowthFactor_LowerBound < g) && (g < Constants.WebserviceGrowthFactor_UpperBound)))
-            {
-                g = Math.Round(rnd.NextDouble(), 2);
-                Thread.Sleep(10);
-            }
-            growthFactor = g;
+            //Thread.Sleep(10);
+            //while (!((Constants.WebserviceGrowthFactor_LowerBound < g) && (g < Constants.WebserviceGrowthFactor_UpperBound)))
+            //{
+            //    g = Math.Round(rnd.NextDouble(), 2);
+            //    Thread.Sleep(10);
+            //}
+            //growthFactor = g;
+            growthFactor = Constants.WebserviceGrowthFactor_LowerBound + (Constants.WebserviceGrowthFactor_UpperBound - Constants.WebserviceGrowthFactor_LowerBound) * g;
 
             double rep = Math.Round(rnd.NextDouble(), 2);
             Thread.Sleep(10);
-            while (!((Constants.WebserviceReputation_LowerBound < rep) && (rep < Constants.WebserviceReputation_UpperBound)))
-            {
-                rep = Math.Round(rnd.NextDouble(), 2);
-                Thread.Sleep(10);
-            }
-            reputation = rep;
+            //while (!((Constants.WebserviceReputation_LowerBound < rep) && (rep < Constants.WebserviceReputation_UpperBound)))
+            //{
+            //    rep = Math.Round(rnd.NextDouble(), 2);
+            //    Thread.Sleep(10);
+            //}
+            //reputation = rep;
+            reputation = Constants.WebserviceReputation_LowerBound + (Constants.WebserviceReputation_UpperBound - Constants.WebserviceReputation_LowerBound) * rep;
+            //Environment.outputLog.AppendText("rep: " + reputation + "\n");
 
         }
 
