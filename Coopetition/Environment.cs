@@ -62,6 +62,7 @@ namespace Coopetition
             foreach (Community community in Communities)
             {
                 int NetworkSize = (community.Members.Count - 3) / Constants.NumberOfNetworksInCommunity;
+                Environment.outputLog.AppendText("NetworkSize: " + NetworkSize + "\n");
                 for (int i = 0; i < Constants.NumberOfNetworksInCommunity; i++)
                 {
                     CollaborationNetwork network = new CollaborationNetwork(i, community.Id);
