@@ -171,7 +171,11 @@ namespace Coopetition
 
             SortTaskPool(taskPool, "QoS");
           //  SortTaskPool(taskPool, "ResponseTime");
-            if (competitiveMembers.Count < 1) return;
+            if (competitiveMembers.Count < 1)
+            {
+                Environment.outputLog.AppendText("There are no competetive web services.\n");
+                return;
+            }
             Random rnd = new Random(DateTime.Now.Millisecond);
             int numberOfTasksToBeDone = rnd.Next(1, competitiveMembers.Count);
 
@@ -182,11 +186,21 @@ namespace Coopetition
             Environment.outputLog.AppendText("Number of Tasks to be done: " + numberOfTasksToBeDone + "\n");
             Environment.outputLog.AppendText("Number of Accepting Members: " + numberOfAcceptingMembers + "\n");
 
-            int numberOfTasksToBeAssigned = Math.Min(numberOfAcceptingMembers, numberOfTasksToBeDone);
             List<Task> notAssignedTasks = taskPool.FindAll(delegate(Task task) { return !(task.Assigned); });
+            int numberOfTasksToBeAssigned = Math.Min(numberOfAcceptingMembers, numberOfTasksToBeDone);
+            numberOfTasksToBeAssigned = Math.Min(numberOfTasksToBeAssigned, notAssignedTasks.Count);
+
+            Environment.outputLog.AppendText("Number of Tasks to be assigned: " + numberOfTasksToBeAssigned + "\n");
+
+            if (notAssignedTasks.Count < 1)
+            {
+                Environment.outputLog.AppendText("There are no tasks left.\n");
+                return;
+            }
 
             Environment.outputLog.AppendText("Number of Tasks Left: " + notAssignedTasks.Count + "\n");
 
+            Environment.outputLog.AppendText("Web Services ");
             int k = 0;
             for (int i = 0; i < numberOfTasksToBeAssigned; i++)
             {
@@ -197,6 +211,7 @@ namespace Coopetition
                 competitiveMembers[i].NumberOfAcceptedTasks++;
                 competitiveMembers[i].CurrentIfAcceptedTask = true;
                 competitiveMembers[i].CurrentAssignedTask = notAssignedTasks[i];
+                Environment.outputLog.AppendText(" " + competitiveMembers[i].Webservice.Id  + " ");
                 k = i;
             }
 
@@ -209,8 +224,11 @@ namespace Coopetition
                     competitiveMembers[j].CurrentIfOfferedTask = true;
                     competitiveMembers[j].CurrentIfAcceptedTask = false;
                     // competitiveMembers[j].NumberOfAcceptedTasks--;
+                    Environment.outputLog.AppendText(" " + competitiveMembers[j].Webservice.Id + " ");
                 } 
             }
+
+            Environment.outputLog.AppendText(" got the job\n");
 
             // Check for the case that number of tasks are greater than number of accepting web services
 
