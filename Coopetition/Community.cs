@@ -171,6 +171,7 @@ namespace Coopetition
 
             SortTaskPool(taskPool, "QoS");
           //  SortTaskPool(taskPool, "ResponseTime");
+            if (competitiveMembers.Count < 1) return;
             Random rnd = new Random(DateTime.Now.Millisecond);
             int numberOfTasksToBeDone = rnd.Next(1, competitiveMembers.Count);
 
@@ -183,6 +184,8 @@ namespace Coopetition
 
             int numberOfTasksToBeAssigned = Math.Min(numberOfAcceptingMembers, numberOfTasksToBeDone);
             List<Task> notAssignedTasks = taskPool.FindAll(delegate(Task task) { return !(task.Assigned); });
+
+            Environment.outputLog.AppendText("Number of Tasks Left: " + notAssignedTasks.Count + "\n");
 
             int k = 0;
             for (int i = 0; i < numberOfTasksToBeAssigned; i++)

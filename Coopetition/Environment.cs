@@ -63,6 +63,7 @@ namespace Coopetition
             {
                 int NetworkSize = (community.Members.Count - 3) / Constants.NumberOfNetworksInCommunity;
                 Environment.outputLog.AppendText("NetworkSize: " + NetworkSize + "\n");
+                Environment.outputLog.AppendText("Member Count: " + community.Members.Count + "\n");
                 for (int i = 0; i < Constants.NumberOfNetworksInCommunity; i++)
                 {
                     CollaborationNetwork network = new CollaborationNetwork(i, community.Id);
@@ -80,6 +81,7 @@ namespace Coopetition
                     community.IntraNetworks.Add(network);
                 }
             }
+
         }
 
         public void Simulation(int numberOfRun)
