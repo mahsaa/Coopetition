@@ -21,7 +21,7 @@ namespace Coopetition
         public static int NumberOfRuns = 10;
 
         public static double CompetitionThreshold = 0.3;
-        public static int MembershipFee = 10;
+        public static int MembershipFee = 2;
         public static double CooperationFeePercentage = 0.2;
         public static double CompetitionProbability = 0.5;
 
@@ -31,13 +31,14 @@ namespace Coopetition
         public static double WebserviceResponseTime_LowerBound = 0.1;
         public static double WebserviceResponseTime_UpperBound = 0.5;
 
-        public static double WebserviceReputation_LowerBound = 0.1;
-        public static double WebserviceReputation_UpperBound = 0.5;
+        public static double WebserviceReputation_LowerBound = 0.2;
+        public static double WebserviceReputation_UpperBound = 0.8;
 
         public static double WebserviceGrowthFactor_LowerBound = 0.01;
         public static double WebserviceGrowthFactor_UpperBound = 0.99;
 
-        public static int Webservice_DefaultBankAccount = 100;
+        public static int WebserviceBudget_LowerBound = 100;
+        public static int WebserviceBudget_UpperBound = 200;
 
         public static double TaskQoS_LowerBound = 0.5;
         public static double TaskQoS_UpperBound = 0.99;

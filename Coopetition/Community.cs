@@ -250,21 +250,16 @@ namespace Coopetition
                             {
                                 double totalReward = (Constants.RewardCoefficient * (wsInfo.Webservice.ProvidedQoS - wsInfo.CurrentAssignedTask.QoS)) + Constants.RewardConstant;
                                 wsInfo.Webservice.Reputation += (totalReward * wsInfo.Webservice.TaskPortionDone);
-                                if (wsInfo.Webservice.Reputation > 1)
-                                {
-                                    wsInfo.Webservice.Reputation = 1;
-                                }
-                               // CollaborationNetwork network = this.intraNetworks.Find(delegate(CollaborationNetwork net) { return net.Id == wsInfo.Webservice.NetworkId; });
                                 for (int i = 0; i < wsnetwork.MembersIds.Count; i++)
                                 {
                                     WebService ws = members.Find(delegate(WebServiceInfo wesInfo) { return wesInfo.Webservice.Id == wsnetwork.MembersIds[i]; }).Webservice;
                                     if (ws.IsCollaborated)
                                     {
                                         ws.Reputation += (totalReward * ws.TaskPortionDone);
-                                        if (ws.Reputation > 1)
-                                        {
-                                            ws.Reputation = 1;
-                                        }
+                                        //if (ws.Reputation > 1)
+                                        //{
+                                        //    ws.Reputation = 1;
+                                        //}
                                     }
                                 }
                             }
@@ -272,44 +267,52 @@ namespace Coopetition
                             {
                                 double totalPenalty = (Constants.PenaltyCoefficient * (wsInfo.Webservice.ProvidedQoS - wsInfo.CurrentAssignedTask.QoS)) + Constants.PenaltyConstant;
                                 wsInfo.Webservice.Reputation -= totalPenalty;
-                                if (wsInfo.Webservice.Reputation < 0)
-                                {
-                                    wsInfo.Webservice.Reputation = 0;
-                                }
+                                //if (wsInfo.Webservice.Reputation < 0)
+                                //{
+                                //    wsInfo.Webservice.Reputation = 0;
+                                //}
                                 for (int i = 0; i < wsnetwork.MembersIds.Count; i++)
                                 {
                                     WebService ws = members.Find(delegate(WebServiceInfo wesInfo) { return wesInfo.Webservice.Id == wsnetwork.MembersIds[i]; }).Webservice;
                                     if (ws.IsCollaborated)
                                     {
                                         ws.Reputation -= (totalPenalty * ws.TaskPortionDone);
-                                        if (wsInfo.Webservice.Reputation < 0)
-                                        {
-                                            wsInfo.Webservice.Reputation = 0;
-                                        }
+                                        //if (wsInfo.Webservice.Reputation < 0)
+                                        //{
+                                        //    wsInfo.Webservice.Reputation = 0;
+                                        //}
                                     }
                                 }
                             }
                         }
-                        else // Has done it alone
+                        else // Has done the task individually
                         {
                             if (wsInfo.Webservice.ProvidedQoS >= wsInfo.CurrentAssignedTask.QoS)
                             {
                                 wsInfo.Webservice.Reputation += (Constants.RewardCoefficient * (wsInfo.Webservice.ProvidedQoS - wsInfo.CurrentAssignedTask.QoS)) + Constants.RewardConstant;
-                                if (wsInfo.Webservice.Reputation > 1)
-                                {
-                                    wsInfo.Webservice.Reputation = 1;
-                                }
+                                //if (wsInfo.Webservice.Reputation > 1)
+                                //{
+                                //    wsInfo.Webservice.Reputation = 1;
+                                //}
                             }
                             else
                             {
                                 wsInfo.Webservice.Reputation -= (Constants.PenaltyCoefficient * (wsInfo.Webservice.ProvidedQoS - wsInfo.CurrentAssignedTask.QoS)) + Constants.PenaltyConstant;
-                                if (wsInfo.Webservice.Reputation < 0)
-                                {
-                                    wsInfo.Webservice.Reputation = 0;
-                                }
+                                //if (wsInfo.Webservice.Reputation < 0)
+                                //{
+                                //    wsInfo.Webservice.Reputation = 0;
+                                //}
                             }
                         }
 
+                        if (wsInfo.Webservice.Reputation > Constants.WebserviceReputation_UpperBound)
+                        {
+                            wsInfo.Webservice.Reputation = Constants.WebserviceReputation_UpperBound;
+                        }
+                        else if (wsInfo.Webservice.Reputation < Constants.WebserviceReputation_LowerBound)
+                        {
+                            wsInfo.Webservice.Reputation = Constants.WebserviceReputation_LowerBound;
+                        }
 
                         if ((wsInfo.Webservice.ProvidedQoS >= wsInfo.CurrentAssignedTask.QoS) || (wsInfo.Webservice.ProvidedQoS < wsInfo.CurrentAssignedTask.QoS - 0.1))
                         {

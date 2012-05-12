@@ -12,7 +12,7 @@ namespace Coopetition
         private double reputation;
         private double qos;
         private double growthFactor;
-        private int bankAccount;
+        private int budget;
         private int networkId = -1; // <NetworkId, Network>
         private double taskPortionDone;
         private bool readyToCompete;
@@ -45,10 +45,10 @@ namespace Coopetition
             set { growthFactor = value; }
         }
 
-        public int BankAccount 
+        public int Budget 
         {
-            get { return bankAccount; }
-            set { bankAccount = value; }
+            get { return budget; }
+            set { budget = value; }
         }
 
         public int NetworkId
@@ -99,29 +99,15 @@ namespace Coopetition
 
             Random rnd = new Random(DateTime.Now.Millisecond);
             double q = Math.Round(rnd.NextDouble(), 2);
-            //Thread.Sleep(10);
-            //while (!((Constants.WebserviceQoS_LowerBound < q) && (q < Constants.WebserviceQoS_UpperBound)))
-            //{
-            //    q = Math.Round(rnd.NextDouble(), 2);
-            //    Thread.Sleep(10);
-            //}
-            //qos = q;
             qos = Constants.WebserviceQoS_LowerBound + (Constants.WebserviceQoS_UpperBound - Constants.WebserviceQoS_LowerBound) * q;
 
-            bankAccount = Constants.Webservice_DefaultBankAccount;
+            budget = rnd.Next(Constants.WebserviceBudget_LowerBound, Constants.WebserviceBudget_UpperBound);
 
             double g = Math.Round(rnd.NextDouble(), 2);
-            //Thread.Sleep(10);
-            //while (!((Constants.WebserviceGrowthFactor_LowerBound < g) && (g < Constants.WebserviceGrowthFactor_UpperBound)))
-            //{
-            //    g = Math.Round(rnd.NextDouble(), 2);
-            //    Thread.Sleep(10);
-            //}
-            //growthFactor = g;
             growthFactor = Constants.WebserviceGrowthFactor_LowerBound + (Constants.WebserviceGrowthFactor_UpperBound - Constants.WebserviceGrowthFactor_LowerBound) * g;
 
             double rep = Math.Round(rnd.NextDouble(), 2);
-            Thread.Sleep(10);
+            //Thread.Sleep(10);
             //while (!((Constants.WebserviceReputation_LowerBound < rep) && (rep < Constants.WebserviceReputation_UpperBound)))
             //{
             //    rep = Math.Round(rnd.NextDouble(), 2);
@@ -131,21 +117,6 @@ namespace Coopetition
             reputation = Constants.WebserviceReputation_LowerBound + (Constants.WebserviceReputation_UpperBound - Constants.WebserviceReputation_LowerBound) * rep;
 
         }
-
-        //public void SetNetwork(Community community)
-        //{
-        //    Random rnd = new Random(DateTime.Now.Millisecond);
-        //    int networksize = rnd.Next(Constants.CollaborationNetworkSize_LowerBound, Constants.CollaborationNetworkSize_UpperBound);
-        //    for (int i = 0; i < networksize; i++)
-        //    {
-        //        int wsIndex = rnd.Next(0, community.Members.Count - 1);
-        //        Thread.Sleep(10);
-        //        if (!community.Members[wsIndex].Webservice.ReadyToCompete)
-        //        {
-        //            this.networkId.Add(community.Members[wsIndex].Webservice);
-        //        }
-        //    }
-        //}
 
         public void CoopetitionDecision(int numberOfRun)
         {
@@ -190,7 +161,7 @@ namespace Coopetition
                         resultQoS = this.providedQoS;
 
                         community.Members[this.id].NumberOfTasksDone++;
-                        this.bankAccount += task.Fee; // Should be changed based on the provided QoS
+                        this.budget += task.Fee; // Should be changed based on the provided QoS
                     }
                 }
                 else
@@ -203,7 +174,7 @@ namespace Coopetition
                     resultQoS = this.providedQoS;
 
                     community.Members[this.id].NumberOfTasksDone++;
-                    this.bankAccount += task.Fee; // Should be changed based on the provided QoS
+                    this.budget += task.Fee; // Should be changed based on the provided QoS
                 }
             }
         }
@@ -221,7 +192,7 @@ namespace Coopetition
             //}
             this.taskPortionDone = rndPortion;
             cm.Members[this.id].NumberOfTasksDone++;
-            this.bankAccount += (int)((1 - Constants.CooperationFeePercentage) * task.Fee);
+            this.budget += (int)((1 - Constants.CooperationFeePercentage) * task.Fee);
             double networkPortion = 1 - rndPortion;
             int numberOfCollaborators = rnd.Next(1, network.MembersIds.Count); //rnd.Next(1, this.networkId.Count); 
 
@@ -268,7 +239,7 @@ namespace Coopetition
                                     //ws.providedQoS = rndCollabQoS;
                                     ws.providedQoS = Math.Max(0, ws.qos - (Math.Round(rnd.NextDouble(), 2) / Constants.QoSVarianceModifier));
                                     cm.Members[ws.id].NumberOfTasksDone++;
-                                    ws.bankAccount += (int)((Constants.CooperationFeePercentage / collaborationNetwork.Count) * task.Fee);
+                                    ws.budget += (int)((Constants.CooperationFeePercentage / collaborationNetwork.Count) * task.Fee);
                                     networkQoS += ws.providedQoS;
                                 });
 

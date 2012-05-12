@@ -41,11 +41,6 @@ namespace Coopetition
                 ws.CommunityId = community.Id;
             }
 
-            //for (int i = 0; i < Constants.NumberOfWebservices; i++)
-            //{
-            //    community.Members[i].Webservice.SetNetwork(community);
-            //}
-
             Communities.Add(community);
 
             // Collaboration Network Initialization
@@ -112,7 +107,7 @@ namespace Coopetition
                 for (int i = 0; i < cm.Members.Count; i++)
                 {
                     Community.WebServiceInfo wsInfo = cm.Members[i];
-                    wsInfo.Webservice.BankAccount -= Constants.MembershipFee;
+                    wsInfo.Webservice.Budget -= Constants.MembershipFee;
                     // Checking growth factor by web services
                     wsInfo.Webservice.CoopetitionDecision(numberOfRun);
                     // Insert CommunityId to the excel file 
@@ -140,7 +135,7 @@ namespace Coopetition
                     wsInfo.Webservice.StartDoingTask(wsInfo.CurrentAssignedTask, cm);
                     // Insert Webservice data to the excel file
                     excel.InsertData(row + 1, ++col, wsInfo.NumberOfTasksDone.ToString(), "", "", "");
-                    excel.InsertData(row + 1, ++col, wsInfo.Webservice.BankAccount.ToString(), "", "", "");
+                    excel.InsertData(row + 1, ++col, wsInfo.Webservice.Budget.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.ReadyToCompete.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.HasCollaborated.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.IsCollaborated.ToString(), "", "", "");
