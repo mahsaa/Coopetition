@@ -83,7 +83,7 @@ namespace Coopetition
 
         private int id;
         private int marketShare;
-        private int bankAccount;
+        private int budget;
         private double reputation;
         private List<WebServiceInfo> members;
         private List<Community> network;
@@ -102,10 +102,10 @@ namespace Coopetition
             set { marketShare = value; } 
         }
 
-        public int BankAccount 
+        public int Budget 
         {
-            get { return bankAccount; }
-            set { bankAccount = value; }
+            get { return budget; }
+            set { budget = value; }
         }
 
         public double Reputation 
@@ -170,10 +170,9 @@ namespace Coopetition
             List<WebServiceInfo> competitiveMembers = members.FindAll(delegate(WebServiceInfo wsInfo) { return wsInfo.Webservice.ReadyToCompete == true; });
 
             SortTaskPool(taskPool, "QoS");
-          //  SortTaskPool(taskPool, "ResponseTime");
             if (competitiveMembers.Count < 1)
             {
-                Environment.outputLog.AppendText("There are no competetive web services.\n");
+                Environment.outputLog.AppendText("There are no competitive web services.\n");
                 return;
             }
             Random rnd = new Random(DateTime.Now.Millisecond);
@@ -182,7 +181,7 @@ namespace Coopetition
             int numberOfAcceptingMembers = (int)Math.Ceiling(Constants.AcceptanceProbability * competitiveMembers.Count);
             int numberOfRejectingMembers = competitiveMembers.Count - numberOfAcceptingMembers;
 
-            Environment.outputLog.AppendText("Competetive Members: " + competitiveMembers.Count + "\n");
+            Environment.outputLog.AppendText("competitive Members: " + competitiveMembers.Count + "\n");
             Environment.outputLog.AppendText("Number of Tasks to be done: " + numberOfTasksToBeDone + "\n");
             Environment.outputLog.AppendText("Number of Accepting Members: " + numberOfAcceptingMembers + "\n");
 
@@ -202,33 +201,60 @@ namespace Coopetition
 
             Environment.outputLog.AppendText("Web Services ");
             int k = 0;
+
+            // Randomly selects among competitive web services
+            int[] indices = new int[numberOfTasksToBeAssigned];
+            List<int> competitiveIndices = new List<int>(competitiveMembers.Count);
+            for (int i = 0; i < competitiveMembers.Count; i++)
+            {
+                competitiveIndices.Add(competitiveMembers[i].Webservice.Id);
+            }
             for (int i = 0; i < numberOfTasksToBeAssigned; i++)
             {
-                // taskPool[i].Assigned = true;
+                int index = rnd.Next(0, competitiveIndices.Count);
+                indices[i] = competitiveIndices[index];
+                competitiveIndices.RemoveAt(index);
+            }
+
+            // Assigns tasks
+            for (int i = 0; i < numberOfTasksToBeAssigned; i++)
+            {
                 notAssignedTasks[i].Assigned = true;
-                competitiveMembers[i].NumberOfOfferedTasks++;
-                competitiveMembers[i].CurrentIfOfferedTask = true;
-                competitiveMembers[i].NumberOfAcceptedTasks++;
-                competitiveMembers[i].CurrentIfAcceptedTask = true;
-                competitiveMembers[i].CurrentAssignedTask = notAssignedTasks[i];
-                Environment.outputLog.AppendText(" " + competitiveMembers[i].Webservice.Id  + " ");
+                WebServiceInfo wsInfo = competitiveMembers.Find(delegate(WebServiceInfo winfo) { return winfo.Webservice.Id == indices[i]; });
+                wsInfo.NumberOfOfferedTasks++;
+                wsInfo.CurrentIfOfferedTask = true;
+                wsInfo.NumberOfAcceptedTasks++;
+                wsInfo.CurrentIfAcceptedTask = true;
+                wsInfo.CurrentAssignedTask = notAssignedTasks[i];
+                Environment.outputLog.AppendText(" " + wsInfo.Webservice.Id + " ");
                 k = i;
             }
+
+            Environment.outputLog.AppendText(" got the job\n");
 
             if (numberOfAcceptingMembers < numberOfTasksToBeAssigned)
             {
                 int numberOfRemainedTasks = Math.Max(numberOfAcceptingMembers, numberOfTasksToBeDone) - numberOfTasksToBeAssigned;
+                int[] refusedIndices = new int[numberOfRemainedTasks];
+                for (int i = 0; i < numberOfRemainedTasks; i++)
+                {
+                    int index = rnd.Next(0, competitiveIndices.Count);
+                    refusedIndices[i] = competitiveIndices[index];
+                    competitiveIndices.RemoveAt(index);
+                }
+
                 for (int j = k; j < numberOfRemainedTasks; j++)
                 {
-                    competitiveMembers[j].NumberOfOfferedTasks++;
-                    competitiveMembers[j].CurrentIfOfferedTask = true;
-                    competitiveMembers[j].CurrentIfAcceptedTask = false;
-                    // competitiveMembers[j].NumberOfAcceptedTasks--;
-                    Environment.outputLog.AppendText(" " + competitiveMembers[j].Webservice.Id + " ");
-                } 
+                    WebServiceInfo wsInfo = competitiveMembers.Find(delegate(WebServiceInfo winfo) { return winfo.Webservice.Id == refusedIndices[j]; });
+                    wsInfo.NumberOfOfferedTasks++;
+                    wsInfo.CurrentIfOfferedTask = true;
+                    wsInfo.CurrentIfAcceptedTask = false;
+                    Environment.outputLog.AppendText(" " + wsInfo.Webservice.Id + " ");
+                }
+
+                Environment.outputLog.AppendText(" refused the offer\n");
             }
 
-            Environment.outputLog.AppendText(" got the job\n");
 
             // Check for the case that number of tasks are greater than number of accepting web services
 
@@ -244,67 +270,40 @@ namespace Coopetition
                 {
                     if (wsInfo.CurrentIfAcceptedTask)
                     {
-                        if (wsInfo.Webservice.HasCollaborated) // Has collaborated
+                        if (wsInfo.Webservice.ProvidedQoS >= wsInfo.CurrentAssignedTask.QoS)
                         {
-                            if (wsInfo.Webservice.ProvidedQoS >= wsInfo.CurrentAssignedTask.QoS)
+                            double totalReward = (Constants.RewardCoefficient * (wsInfo.Webservice.ProvidedQoS - wsInfo.CurrentAssignedTask.QoS)) + Constants.RewardConstant;
+                            wsInfo.Webservice.Reputation += (totalReward * wsInfo.Webservice.TaskPortionDone);
+                            if (wsInfo.Webservice.HasCollaborated) // Has collaborated
                             {
-                                double totalReward = (Constants.RewardCoefficient * (wsInfo.Webservice.ProvidedQoS - wsInfo.CurrentAssignedTask.QoS)) + Constants.RewardConstant;
-                                wsInfo.Webservice.Reputation += (totalReward * wsInfo.Webservice.TaskPortionDone);
                                 for (int i = 0; i < wsnetwork.MembersIds.Count; i++)
                                 {
                                     WebService ws = members.Find(delegate(WebServiceInfo wesInfo) { return wesInfo.Webservice.Id == wsnetwork.MembersIds[i]; }).Webservice;
                                     if (ws.IsCollaborated)
                                     {
                                         ws.Reputation += (totalReward * ws.TaskPortionDone);
-                                        //if (ws.Reputation > 1)
-                                        //{
-                                        //    ws.Reputation = 1;
-                                        //}
                                     }
                                 }
                             }
-                            else
+                        }
+                        else
+                        {
+                            double totalPenalty = (Constants.PenaltyCoefficient * (wsInfo.Webservice.ProvidedQoS - wsInfo.CurrentAssignedTask.QoS)) + Constants.PenaltyConstant;
+                            wsInfo.Webservice.Reputation -= totalPenalty; // Penalized badly by MWS, so we don't consider task portion done by the main web service here
+                            if (wsInfo.Webservice.HasCollaborated) // Has collaborated
                             {
-                                double totalPenalty = (Constants.PenaltyCoefficient * (wsInfo.Webservice.ProvidedQoS - wsInfo.CurrentAssignedTask.QoS)) + Constants.PenaltyConstant;
-                                wsInfo.Webservice.Reputation -= totalPenalty;
-                                //if (wsInfo.Webservice.Reputation < 0)
-                                //{
-                                //    wsInfo.Webservice.Reputation = 0;
-                                //}
                                 for (int i = 0; i < wsnetwork.MembersIds.Count; i++)
                                 {
                                     WebService ws = members.Find(delegate(WebServiceInfo wesInfo) { return wesInfo.Webservice.Id == wsnetwork.MembersIds[i]; }).Webservice;
                                     if (ws.IsCollaborated)
                                     {
                                         ws.Reputation -= (totalPenalty * ws.TaskPortionDone);
-                                        //if (wsInfo.Webservice.Reputation < 0)
-                                        //{
-                                        //    wsInfo.Webservice.Reputation = 0;
-                                        //}
                                     }
                                 }
                             }
                         }
-                        else // Has done the task individually
-                        {
-                            if (wsInfo.Webservice.ProvidedQoS >= wsInfo.CurrentAssignedTask.QoS)
-                            {
-                                wsInfo.Webservice.Reputation += (Constants.RewardCoefficient * (wsInfo.Webservice.ProvidedQoS - wsInfo.CurrentAssignedTask.QoS)) + Constants.RewardConstant;
-                                //if (wsInfo.Webservice.Reputation > 1)
-                                //{
-                                //    wsInfo.Webservice.Reputation = 1;
-                                //}
-                            }
-                            else
-                            {
-                                wsInfo.Webservice.Reputation -= (Constants.PenaltyCoefficient * (wsInfo.Webservice.ProvidedQoS - wsInfo.CurrentAssignedTask.QoS)) + Constants.PenaltyConstant;
-                                //if (wsInfo.Webservice.Reputation < 0)
-                                //{
-                                //    wsInfo.Webservice.Reputation = 0;
-                                //}
-                            }
-                        }
 
+                        // Maintains the reputation constraints
                         if (wsInfo.Webservice.Reputation > Constants.WebserviceReputation_UpperBound)
                         {
                             wsInfo.Webservice.Reputation = Constants.WebserviceReputation_UpperBound;
@@ -314,42 +313,39 @@ namespace Coopetition
                             wsInfo.Webservice.Reputation = Constants.WebserviceReputation_LowerBound;
                         }
 
-                        if ((wsInfo.Webservice.ProvidedQoS >= wsInfo.CurrentAssignedTask.QoS) || (wsInfo.Webservice.ProvidedQoS < wsInfo.CurrentAssignedTask.QoS - 0.1))
-                        {
-                            wsInfo.Webservice.Reputation += (wsInfo.Webservice.Reputation * 0.1);
-                            if (wsnetwork != null)
-                            {
-                                for (int i = 0; i < wsnetwork.MembersIds.Count; i++)
-                                {
-                                    WebService ws = members.Find(delegate(WebServiceInfo wesInfo) { return wesInfo.Webservice.Id == wsnetwork.MembersIds[i]; }).Webservice;
-                                    if (ws.IsCollaborated)
-                                    {
-                                        ws.Reputation += (ws.Reputation * 0.08);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            wsInfo.Webservice.Reputation -= (wsInfo.Webservice.Reputation * Constants.ResponsibleWSPunishmentPercentage);
-                            if (wsnetwork != null)
-                            {
-                                for (int i = 0; i < wsnetwork.MembersIds.Count; i++)
-                                {
-                                    WebService ws = members.Find(delegate(WebServiceInfo wesInfo) { return wesInfo.Webservice.Id == wsnetwork.MembersIds[i]; }).Webservice;
+                        // I don't understand this code section!
+                        //if ((wsInfo.Webservice.ProvidedQoS >= wsInfo.CurrentAssignedTask.QoS) || (wsInfo.Webservice.ProvidedQoS < wsInfo.CurrentAssignedTask.QoS - 0.1))
+                        //{
+                        //    wsInfo.Webservice.Reputation += (wsInfo.Webservice.Reputation * 0.1);
+                        //    if (wsnetwork != null)
+                        //    {
+                        //        for (int i = 0; i < wsnetwork.MembersIds.Count; i++)
+                        //        {
+                        //            WebService ws = members.Find(delegate(WebServiceInfo wesInfo) { return wesInfo.Webservice.Id == wsnetwork.MembersIds[i]; }).Webservice;
+                        //            if (ws.IsCollaborated)
+                        //            {
+                        //                ws.Reputation += (ws.Reputation * 0.08);
+                        //            }
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    wsInfo.Webservice.Reputation -= (wsInfo.Webservice.Reputation * Constants.ResponsibleWSPunishmentPercentage);
+                        //    if (wsnetwork != null)
+                        //    {
+                        //        for (int i = 0; i < wsnetwork.MembersIds.Count; i++)
+                        //        {
+                        //            WebService ws = members.Find(delegate(WebServiceInfo wesInfo) { return wesInfo.Webservice.Id == wsnetwork.MembersIds[i]; }).Webservice;
 
-                                    if (ws.IsCollaborated)
-                                    {
-                                        ws.Reputation -= (ws.Reputation * (1 - Constants.ResponsibleWSPunishmentPercentage));
-                                    }
-                                }
-                            }
-                        }
+                        //            if (ws.IsCollaborated)
+                        //            {
+                        //                ws.Reputation -= (ws.Reputation * (1 - Constants.ResponsibleWSPunishmentPercentage));
+                        //            }
+                        //        }
+                        //    }
+                        //}
                     }
-                }
-                else
-                {
-
                 }
 
             }

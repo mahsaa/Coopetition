@@ -20,6 +20,7 @@ namespace Coopetition
         private bool isCollaborated = false;
         private bool hasCollaborated = false;
         private int communityId;
+        private Constants.WebserviceType type = Constants.WebserviceType.Nothing;
 
         public int Id 
         { 
@@ -93,6 +94,12 @@ namespace Coopetition
             set { communityId = value; } 
         }
 
+        public Constants.WebserviceType Type 
+        {
+            get { return type; }
+            set { type = value; } 
+        }
+
         public WebService(int _id)
         {
             this.id = _id;
@@ -107,13 +114,6 @@ namespace Coopetition
             growthFactor = Constants.WebserviceGrowthFactor_LowerBound + (Constants.WebserviceGrowthFactor_UpperBound - Constants.WebserviceGrowthFactor_LowerBound) * g;
 
             double rep = Math.Round(rnd.NextDouble(), 2);
-            //Thread.Sleep(10);
-            //while (!((Constants.WebserviceReputation_LowerBound < rep) && (rep < Constants.WebserviceReputation_UpperBound)))
-            //{
-            //    rep = Math.Round(rnd.NextDouble(), 2);
-            //    Thread.Sleep(10);
-            //}
-            //reputation = rep;
             reputation = Constants.WebserviceReputation_LowerBound + (Constants.WebserviceReputation_UpperBound - Constants.WebserviceReputation_LowerBound) * rep;
 
         }
@@ -185,26 +185,13 @@ namespace Coopetition
             Random rnd = new Random(DateTime.Now.Millisecond);
             double rndPortion = Math.Round(rnd.NextDouble(), 2);
             this.hasCollaborated = true;
-            //while (rndPortion < Constants.MainTaskPortion)
-            //{
-            //    rndPortion = Math.Round(rnd.NextDouble(), 2);
-            //    Thread.Sleep(10);
-            //}
-            this.taskPortionDone = rndPortion;
+            this.taskPortionDone = rndPortion; // main web service task portion
             cm.Members[this.id].NumberOfTasksDone++;
+            double rndQoS = Math.Max(0, this.qos - (Math.Round(rnd.NextDouble(), 2) / Constants.QoSVarianceModifier));
+            this.providedQoS = rndQoS;
             this.budget += (int)((1 - Constants.CooperationFeePercentage) * task.Fee);
             double networkPortion = 1 - rndPortion;
-            int numberOfCollaborators = rnd.Next(1, network.MembersIds.Count); //rnd.Next(1, this.networkId.Count); 
-
-            double rndQoS = Math.Max(0, this.qos - (Math.Round(rnd.NextDouble(), 2) / Constants.QoSVarianceModifier));
-
-            //double rndQoS = Math.Round(rnd.NextDouble(), 2);
-            //while (rndQoS > this.qos)
-            //{
-            //    rndQoS = Math.Round(rnd.NextDouble(), 2);
-            //    Thread.Sleep(10);
-            //}
-            //this.providedQoS = rndQoS;
+            int numberOfCollaborators = rnd.Next(1, network.MembersIds.Count);
 
             double networkMembersPortion = Math.Round((double)networkPortion / numberOfCollaborators, 2);
             double networkQoS = 0;
@@ -216,7 +203,7 @@ namespace Coopetition
                 networkMembers.Add(webserviceInfos.Find(delegate(Community.WebServiceInfo wsInfo) { return wsInfo.Webservice.Id == network.MembersIds[i]; }).Webservice);
             }
             networkMembers.RemoveAll(delegate(WebService ws) { return ws.Id == this.id; });
-            List<WebService> tempNetwork = networkMembers; //this.networkId;
+            List<WebService> tempNetwork = networkMembers;
             while (numberOfCollaborators > 0)
             {
                 int j = rnd.Next(0, tempNetwork.Count);
@@ -226,24 +213,20 @@ namespace Coopetition
                 tempNetwork.RemoveAt(j);
             }
 
+            String collaborativeMemberIds = "";
             collaborationNetwork.ForEach(delegate(WebService ws) 
                                 { 
                                     ws.taskPortionDone = networkMembersPortion; 
-                                    /* ws.StartCollaborate(); */
-                                    //double rndCollabQoS = Math.Round(rnd.NextDouble(), 2);
-                                    //while (rndCollabQoS > ws.qos)
-                                    //{
-                                    //    rndCollabQoS = Math.Round(rnd.NextDouble(), 2);
-                                    //    Thread.Sleep(10);
-                                    //}
-                                    //ws.providedQoS = rndCollabQoS;
                                     ws.providedQoS = Math.Max(0, ws.qos - (Math.Round(rnd.NextDouble(), 2) / Constants.QoSVarianceModifier));
                                     cm.Members[ws.id].NumberOfTasksDone++;
                                     ws.budget += (int)((Constants.CooperationFeePercentage / collaborationNetwork.Count) * task.Fee);
                                     networkQoS += ws.providedQoS;
+                                    collaborativeMemberIds += ws.id + ", ";
                                 });
-
-            this.providedQoS = (Constants.ResponsibleWSQoSPortion * this.providedQoS) + ((1 - Constants.ResponsibleWSQoSPortion) * networkQoS);
+            char[] charsToRemove = ", ".ToCharArray();
+            collaborativeMemberIds = collaborativeMemberIds.TrimEnd(charsToRemove);
+            Environment.outputLog.AppendText("Web service " + this.id + " Cooperates with " + collaborativeMemberIds + "\n");
+            this.providedQoS = (Constants.ResponsibleWSQoSPortion * this.providedQoS) + ((1 - Constants.ResponsibleWSQoSPortion) * networkQoS); // main web service provided QoS (provided QoS for the task)
         }
 
     }

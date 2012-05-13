@@ -13,12 +13,22 @@ namespace Coopetition
             Collaborate
         }
 
+        public enum WebserviceType
+        { 
+            Coopetitive = 1,
+            JustCompetitive,
+            JustCooperative,
+            Nothing
+        }
+
         public const string BaseDirectory = @"C:\Projects\Thesis\Coopetition\Results\";
         public static int NumberOfWebservices = 50;
         public static int NumberOfCommunities = 5;
         public static int NumberOfUsers = 1000;
-        public static int NumberOfTasks = 40;
+        public static int NumberOfTasks = 100;
         public static int NumberOfRuns = 10;
+
+        public static double CoopetitiveWebservicesPercentage = 0.6;
 
         public static double CompetitionThreshold = 0.3;
         public static int MembershipFee = 2;

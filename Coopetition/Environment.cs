@@ -34,9 +34,29 @@ namespace Coopetition
 
             // Generate web services
             outputLog.AppendText("Generating " + Constants.NumberOfWebservices + " of Web Services...\n");
+            int numberOfNonCoopetitiveMembers = (int)(Constants.NumberOfWebservices * Constants.CoopetitiveWebservicesPercentage);
+            int numberOfJustCompetitiveMembers = (int)(numberOfNonCoopetitiveMembers / 2);
+            int k = 0;
+
             for (int i = 0; i < Constants.NumberOfWebservices; i++)
             {
                 WebService ws = new WebService(i);
+                if (k < numberOfJustCompetitiveMembers)
+                {
+                    ws.Type = Constants.WebserviceType.JustCompetitive;
+                    ws.ReadyToCompete = true;
+                    k++;
+                }
+                else if ((k == numberOfJustCompetitiveMembers) || (k < numberOfNonCoopetitiveMembers))
+                {
+                    ws.Type = Constants.WebserviceType.JustCooperative;
+                    k++;
+                }
+                else if (k == numberOfNonCoopetitiveMembers)
+                {
+                    ws.Type = Constants.WebserviceType.Coopetitive;
+                }
+
                 community.AddMember(ws);
                 ws.CommunityId = community.Id;
             }
@@ -85,14 +105,14 @@ namespace Coopetition
             excel.createHeaders(row, ++col, "wsId", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsNetwork", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsQoS", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsType", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsGrowthFactor", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsReputation", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsNTD", "A", "B", 2, true, 10, "n");
-            excel.createHeaders(row, ++col, "wsBankAccount", "A", "B", 2, true, 10, "n");
+            excel.createHeaders(row, ++col, "wsBudget", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsCompeted", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsHasCollaborated", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsIsCollaborated", "A", "B", 2, true, 10, "n");
-           // excel.createHeaders(row, ++col, "Webservice_Network", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsTaskQoS", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsTaskFee", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsProvidedQoS", "A", "B", 2, true, 10, "n");
@@ -108,13 +128,28 @@ namespace Coopetition
                 {
                     Community.WebServiceInfo wsInfo = cm.Members[i];
                     wsInfo.Webservice.Budget -= Constants.MembershipFee;
-                    // Checking growth factor by web services
-                    wsInfo.Webservice.CoopetitionDecision(numberOfRun);
+                    if (wsInfo.Webservice.Type == Constants.WebserviceType.Coopetitive)
+                    {
+                        // Checking growth factor by web services
+                        wsInfo.Webservice.CoopetitionDecision(numberOfRun);
+                    }
                     // Insert CommunityId to the excel file 
                     excel.InsertData(row + 1, col, cm.Id.ToString(), "", "", "");
                     // Insert Webservice data to the excel file
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.Id.ToString(), "", "", "");
-                    excel.InsertData(row + 1, ++col, wsInfo.Webservice.NetworkId.ToString(), "", "", "");
+                    String strNetworkMembers = "";
+                    if (wsInfo.Webservice.NetworkId != -1)
+                    {
+                        CollaborationNetwork net = cm.IntraNetworks.Find(delegate(CollaborationNetwork nw) { return nw.Id == wsInfo.Webservice.NetworkId; });
+                        foreach (int memberid in net.MembersIds)
+                        {
+                            strNetworkMembers += memberid + ", ";
+                        }
+                    }
+                    char[] charsToRemove = ", ".ToCharArray();
+                    strNetworkMembers = strNetworkMembers.TrimEnd(charsToRemove);
+                    excel.InsertData(row + 1, ++col, strNetworkMembers, "", "", "");
+                    excel.InsertData(row + 1, ++col, wsInfo.Webservice.Type.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.QoS.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.GrowthFactor.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.Reputation.ToString(), "", "", "");
@@ -139,27 +174,37 @@ namespace Coopetition
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.ReadyToCompete.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.HasCollaborated.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.IsCollaborated.ToString(), "", "", "");
-                    // excel.InsertData(row + 1, ++col, wsInfo.Webservice.Network.ToString(), "", "", "");
                     if (wsInfo.CurrentAssignedTask != null)
                     {
                         excel.InsertData(row + 1, ++col, wsInfo.CurrentAssignedTask.QoS.ToString(), "", "", "");
                         excel.InsertData(row + 1, ++col, wsInfo.CurrentAssignedTask.Fee.ToString(), "", "", "");
-                        excel.InsertData(row + 1, ++col, wsInfo.Webservice.ProvidedQoS.ToString(), "", "", ""); 
                     }
                     else
                     {
                         excel.InsertData(row + 1, ++col, "", "", "", "");
                         excel.InsertData(row + 1, ++col, "", "", "", "");
-                        excel.InsertData(row + 1, ++col, "", "", "", ""); 
                     }
+                    excel.InsertData(row + 1, ++col, wsInfo.Webservice.ProvidedQoS.ToString(), "", "", ""); 
                     row++;
                     col = currentcol;
                 }
 
-                
-                                    
                 // Service evaluation and reputation update by Master web service
                 cm.UpdateMemberReputation();
+            }
+        }
+
+        private void ReleaseTasks()
+        {
+            for (int j = 0; j < Communities.Count; j++)
+            {
+                Community cm = Communities[j];
+                foreach (Community.WebServiceInfo wsInfo in cm.Members)
+                {
+                    wsInfo.CurrentAssignedTask = null;
+                    wsInfo.CurrentIfAcceptedTask = false;
+                    wsInfo.CurrentIfOfferedTask = false;
+                }
             }
         }
 
@@ -177,6 +222,7 @@ namespace Coopetition
                 Simulation(i);
                 long ticks = DateTime.Now.Ticks;
                 excel.SaveDocument("coopetition_" + i.ToString() + "_" + ticks + ".xls");
+                ReleaseTasks();
             }
             long end = DateTime.Now.Ticks;
             outputLog.AppendText("Simulation took: " + (int)((end-start)/10000) + " ms\n");

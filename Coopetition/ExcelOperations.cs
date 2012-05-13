@@ -6,6 +6,8 @@ using Microsoft.Office.Core;
 using Microsoft.Office.Interop;
 using System.IO;
 using System.Reflection;
+using System.Diagnostics;
+using System.Collections;
 
 namespace Coopetition
 {
@@ -14,15 +16,27 @@ namespace Coopetition
         private Microsoft.Office.Interop.Excel.Application app = null;
         private Microsoft.Office.Interop.Excel.Workbook workbook = null;
         private Microsoft.Office.Interop.Excel.Worksheet worksheet = null;
-       // private Microsoft.Office.Interop.Excel.Range range = null;
+        private Hashtable myHashtable;
 
         public void CreateExcelFile()
         {
             app = new Microsoft.Office.Interop.Excel.Application();
-            //app.Visible = true;
             workbook = app.Workbooks.Add(1);
-            //workbook.FileFormat = Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal;
             worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Sheets[1];
+            AddExcelProcessTolist();
+        }
+
+        private void AddExcelProcessTolist()
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("excel");
+            myHashtable = new Hashtable();
+            int iCount = 0;
+
+            foreach (Process ExcelProcess in AllProcesses)
+            {
+                myHashtable.Add(ExcelProcess.Id, iCount);
+                iCount = iCount + 1;
+            }
         }
 
         public void createHeaders(int row, int col, string htext, string cell1, string cell2, int mergeColumns, bool font, int size, string fcolor)
@@ -38,16 +52,30 @@ namespace Coopetition
         public void SaveDocument(string filename)
         { 
             string fileaddress = Constants.BaseDirectory + filename;
-            //workbook.SaveAs(fileaddress, ".xls", "", "", "", "", Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlShared, "", "", "", "", "");
             if (!Directory.Exists(Constants.BaseDirectory))
             {
                 Directory.CreateDirectory(Constants.BaseDirectory);
             }
-            //workbook.SaveAs(fileaddress, "", "", "", false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlShared, false, false, false,
-            //                "", false);
+            worksheet.Columns.AutoFit();
             workbook.SaveAs(fileaddress, Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal, null, null,
             false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlShared,
             null, null, null, null, null);
+            
+            KillExcelProcess();
+        }
+
+        private void KillExcelProcess()
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("excel");
+
+            // check to kill the right process
+            foreach (Process ExcelProcess in AllProcesses)
+            {
+                if (myHashtable.ContainsKey(ExcelProcess.Id))
+                    ExcelProcess.Kill();
+            }
+
+            // AllProcesses = null;
         }
 
         public string GetValue(string filename, int row, int col)
