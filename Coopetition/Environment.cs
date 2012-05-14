@@ -15,6 +15,7 @@ namespace Coopetition
         public static ExcelManipulation excel = new ExcelManipulation();
         public static int row = 1;
         public static int col = 1;
+        public static Coopetition.Constants.SimulationType overAllStrategy = Coopetition.Constants.SimulationType.Cooperative;
 
         public static RichTextBox outputLog;
 

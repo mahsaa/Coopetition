@@ -21,6 +21,13 @@ namespace Coopetition
             Nothing
         }
 
+        public enum SimulationType
+        {
+            Cooperative = 1,
+            AllRandom,
+            AllCompete
+        }
+
         public const string BaseDirectory = @"C:\Projects\Thesis\Coopetition\Results\";
         public static int NumberOfWebservices = 50;
         public static int NumberOfCommunities = 5;
