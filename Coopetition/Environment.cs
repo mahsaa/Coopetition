@@ -128,11 +128,11 @@ namespace Coopetition
                 {
                     Community.WebServiceInfo wsInfo = cm.Members[i];
                     wsInfo.Webservice.Budget -= Constants.MembershipFee;
-                    if (wsInfo.Webservice.Type == Constants.WebserviceType.Coopetitive)
-                    {
+                    //if (wsInfo.Webservice.Type == Constants.WebserviceType.Coopetitive)
+                    //{
                         // Checking growth factor by web services
                         wsInfo.Webservice.CoopetitionDecision(numberOfRun);
-                    }
+                    //}
                     // Insert CommunityId to the excel file 
                     excel.InsertData(row + 1, col, cm.Id.ToString(), "", "", "");
                     // Insert Webservice data to the excel file
