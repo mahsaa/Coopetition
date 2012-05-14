@@ -118,6 +118,8 @@ namespace Coopetition
             excel.createHeaders(row, ++col, "wsTaskFee", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsProvidedQoS", "A", "B", 2, true, 10, "n");
 
+            overAllStrategy = Constants.SimulationType.Cooperative;
+
             for (int j = 0; j < Communities.Count; j++)
             {
                 Community cm = Communities[j];
