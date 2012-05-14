@@ -45,9 +45,6 @@ namespace Coopetition
         public static double WebserviceQoS_LowerBound = 0.01;
         public static double WebserviceQoS_UpperBound = 0.99;
 
-        public static double WebserviceResponseTime_LowerBound = 0.1;
-        public static double WebserviceResponseTime_UpperBound = 0.5;
-
         public static double WebserviceReputation_LowerBound = 0.2;
         public static double WebserviceReputation_UpperBound = 0.8;
 
