@@ -134,7 +134,8 @@ namespace Coopetition
                     //if (wsInfo.Webservice.Type == Constants.WebserviceType.Coopetitive)
                     //{
                         // Checking growth factor by web services
-                        wsInfo.Webservice.CoopetitionDecision(numberOfRun);
+                        //wsInfo.Webservice.CoopetitionDecision(numberOfRun);
+                    wsInfo.Webservice.CoopetitionDecision(wsInfo.NumberOfTasksDone, numberOfRun);
                     //}
                     // Insert CommunityId to the excel file 
                     excel.InsertData(row + 1, col, cm.Id.ToString(), "", "", "");
@@ -152,8 +153,8 @@ namespace Coopetition
                     char[] charsToRemove = ", ".ToCharArray();
                     strNetworkMembers = strNetworkMembers.TrimEnd(charsToRemove);
                     excel.InsertData(row + 1, ++col, strNetworkMembers, "", "", "");
-                    excel.InsertData(row + 1, ++col, wsInfo.Webservice.Type.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.QoS.ToString(), "", "", "");
+                    excel.InsertData(row + 1, ++col, wsInfo.Webservice.Type.ToString(), "", "", ""); 
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.GrowthFactor.ToString(), "", "", "");
                     excel.InsertData(row + 1, ++col, wsInfo.Webservice.Reputation.ToString(), "", "", "");
                     row++;

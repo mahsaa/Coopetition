@@ -118,34 +118,48 @@ namespace Coopetition
 
         }
 
-        public void CoopetitionDecision(int numberOfRun)
-        {
-            if (Environment.overAllStrategy == Constants.SimulationType.Cooperative)
-            {
-                growthFactor = this.qos * this.reputation;
-                if (this.readyToCompete && numberOfRun > 1)
-                {
-                    growthFactor = this.providedQoS * this.reputation;
-                    // growthFactor *= Math.Abs(((double)(this.bankAccount - Constants.Webservice_DefaultBankAccount) / (numberOfRun * Constants.TaskFee_UpperBound)));
-                }
-                // Environment.outputLog.AppendText("WSid: " + this.id + " ,GF: " + growthFactor + ", QoS: " + this.qos + ", rep: " + this.reputation + ", numberofRun: " + numberOfRun + ", bankAccount: " + bankAccount + ", readytc: " + readyToCompete + "\n");
-                if (growthFactor >= Constants.CompetitionThreshold)
-                    readyToCompete = true;
-            }
-            else if (Environment.overAllStrategy == Constants.SimulationType.AllCompete)
-            {
-                readyToCompete = true;
-            }
-            else if (Environment.overAllStrategy == Constants.SimulationType.AllRandom)
-            {
-                Random rnd = new Random();
-                double p = rnd.NextDouble();
-                if (p > 0.5)
-                    readyToCompete = true;
-                else
-                    readyToCompete = false;
-            }
+        //public void CoopetitionDecision(int numberOfRun)
+        //{
+        //    if (Environment.overAllStrategy == Constants.SimulationType.Cooperative)
+        //    {
+        //        growthFactor = this.qos * this.reputation;
+        //        if (this.readyToCompete && numberOfRun > 1)
+        //        {
+        //            growthFactor = this.providedQoS * this.reputation;
+        //            // growthFactor *= Math.Abs(((double)(this.bankAccount - Constants.Webservice_DefaultBankAccount) / (numberOfRun * Constants.TaskFee_UpperBound)));
+        //        }
+        //        // Environment.outputLog.AppendText("WSid: " + this.id + " ,GF: " + growthFactor + ", QoS: " + this.qos + ", rep: " + this.reputation + ", numberofRun: " + numberOfRun + ", bankAccount: " + bankAccount + ", readytc: " + readyToCompete + "\n");
+        //        if (growthFactor >= Constants.CompetitionThreshold)
+        //            readyToCompete = true;
+        //    }
+        //    else if (Environment.overAllStrategy == Constants.SimulationType.AllCompete)
+        //    {
+        //        readyToCompete = true;
+        //    }
+        //    else if (Environment.overAllStrategy == Constants.SimulationType.AllRandom)
+        //    {
+        //        Random rnd = new Random();
+        //        double p = rnd.NextDouble();
+        //        if (p > 0.5)
+        //            readyToCompete = true;
+        //        else
+        //            readyToCompete = false;
+        //    }
 
+        //}
+
+        public void CoopetitionDecision(int numberOfTasksDone, int numberOfRun)
+        {
+            if ((numberOfTasksDone > 0) && (numberOfRun > 0))
+            {
+                //this.growthFactor = (double)(this.reputation * this.qos * ((double)numberOfTasksDone / this.budget)) / 3;
+                this.growthFactor = this.reputation * this.qos * ((double)numberOfTasksDone / this.budget);
+            }
+            else if (numberOfRun > 0)
+            {
+                this.growthFactor = (double)((double)this.reputation * this.qos / 2) / 3;
+            }
+            Environment.outputLog.AppendText("Web service " + this.id + "'s NTD: " + numberOfTasksDone + " GrowthFactor: " + this.growthFactor + "\n");
         }
 
         public void StartDoingTask(Task task, Community community)

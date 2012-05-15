@@ -12,7 +12,7 @@ namespace Coopetition
             private WebService webservice;
             private int numberOfOfferedTasks;
             private int numberOfAcceptedTasks;
-            private int numberOfTasksDone;
+            private int numberOfTasksDone = 0;
             private int positiveFeedbacks;
             private int negativeFeedbacks;
             private double activenessFactor;
