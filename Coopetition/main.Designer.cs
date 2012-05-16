@@ -28,22 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnStartRun = new System.Windows.Forms.Button();
             this.outputLog = new System.Windows.Forms.RichTextBox();
             this.btnStrategy = new System.Windows.Forms.Button();
             this.cboStrategies = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // btnStartRun
-            // 
-            this.btnStartRun.Location = new System.Drawing.Point(469, 427);
-            this.btnStartRun.Name = "btnStartRun";
-            this.btnStartRun.Size = new System.Drawing.Size(75, 23);
-            this.btnStartRun.TabIndex = 0;
-            this.btnStartRun.Text = "Start Run";
-            this.btnStartRun.UseVisualStyleBackColor = true;
-            this.btnStartRun.Click += new System.EventHandler(this.btnStartRun_Click);
             // 
             // outputLog
             // 
@@ -94,7 +83,6 @@
             this.Controls.Add(this.cboStrategies);
             this.Controls.Add(this.btnStrategy);
             this.Controls.Add(this.outputLog);
-            this.Controls.Add(this.btnStartRun);
             this.Name = "main";
             this.Text = "main";
             this.Load += new System.EventHandler(this.main_Load);
@@ -105,7 +93,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnStartRun;
         private System.Windows.Forms.RichTextBox outputLog;
         private System.Windows.Forms.Button btnStrategy;
         private System.Windows.Forms.ComboBox cboStrategies;
