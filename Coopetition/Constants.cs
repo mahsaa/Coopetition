@@ -9,8 +9,9 @@ namespace Coopetition
     {
         public enum Strategy
         {
-            Compete = 1,
-            Collaborate
+            Competition = 1,
+            Cooperation,
+            Coopetition
         }
 
         public enum WebserviceType
