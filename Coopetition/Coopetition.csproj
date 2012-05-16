@@ -57,6 +57,8 @@
     <Compile Include="CollaborationNetwork.cs" />
     <Compile Include="Community.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="DataSetTools.cs" />
+    <Compile Include="DataSetWebService.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="ExcelOperations.cs" />
     <Compile Include="main.cs">

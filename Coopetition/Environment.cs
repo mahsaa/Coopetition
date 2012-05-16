@@ -108,6 +108,9 @@ namespace Coopetition
         {
             CreateInitializationTables();
 
+            DataSetTools dsTools = new DataSetTools();
+            List<DataSetWebService> dataSet = dsTools.parseDateSet("c:\\projects\\QWS_Dataset_v2.txt");
+
             outputLog.AppendText("/*********************** Strategy: " + strategy.ToString() + " ***********************/\n");
 
             // Generate tasks
