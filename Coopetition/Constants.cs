@@ -33,7 +33,8 @@ namespace Coopetition
         public static int NumberOfCommunities = 5;
         public static int NumberOfUsers = 1000;
         public static int NumberOfTasks = 1000;
-        public static int NumberOfRuns = 100;
+        public static int NumberOfRuns = 50;
+        public static int MaxNumberOfTasksPerRun = 14;
 
         public static double CoopetitiveWebservicesPercentage = 0.6;
 
@@ -54,8 +55,8 @@ namespace Coopetition
         public static int WebserviceBudget_LowerBound = 100;
         public static int WebserviceBudget_UpperBound = 200;
 
-        public static double TaskQoS_LowerBound = 0.7;
-        public static double TaskQoS_UpperBound = 0.99;
+        public static double TaskQoS_LowerBound = 0.6;
+        public static double TaskQoS_UpperBound = 0.8;
 
         public static double TaskResponseTime_LowerBound = 0.1;
         public static double TaskResponseTime_UpperBound = 0.5;

@@ -176,7 +176,8 @@ namespace Coopetition
                 return;
             }
             Random rnd = new Random(DateTime.Now.Millisecond);
-            int numberOfTasksToBeDone = rnd.Next(1, competitiveMembers.Count);
+            //int numberOfTasksToBeDone = rnd.Next(1, competitiveMembers.Count);
+            int numberOfTasksToBeDone = rnd.Next(1, Constants.MaxNumberOfTasksPerRun);
 
             int numberOfAcceptingMembers = (int)Math.Ceiling(Constants.AcceptanceProbability * competitiveMembers.Count);
             int numberOfRejectingMembers = competitiveMembers.Count - numberOfAcceptingMembers;
