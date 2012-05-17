@@ -15,11 +15,15 @@ namespace Coopetition
         public static List<Community> Communities = new List<Community>(1);
         public static List<WebService> WebServices = new List<WebService>(Constants.NumberOfWebservices);
         public static ExcelManipulation excel = new ExcelManipulation();
+
+        public static List<double> avgBudget = new List<double>();
+        public static List<double> totalBudget = new List<double>();
+        public static List<double> avgReputation = new List<double>();
+
         public static int row = 1;
         public static int col = 1;
 
         public static DataTable dtWsInitialValues = new DataTable();
-       // public static DataRow drWsInitialValues;
         public static DataColumn colCmId = new DataColumn("cmId");
         public static DataColumn colWsId = new DataColumn("wsId");
         public static DataColumn colWsNetwork = new DataColumn("wsNetwork");
@@ -38,7 +42,6 @@ namespace Coopetition
       //  public static DataColumn colWsProvidedQoS = new DataColumn("wsProvidedQoS");
 
         public static DataTable dtTaskInitialValues = new DataTable();
-       // public static DataRow drTaskInitialValues;
         public static DataColumn colTaskId = new DataColumn("taskId");
         public static DataColumn colTaskQoS = new DataColumn("taskQoS");
         public static DataColumn colTaskFee = new DataColumn("taskFee");
@@ -50,8 +53,6 @@ namespace Coopetition
 
         public void CreateInitializationTables()
         {
-           // dtWsInitialValues = new DataTable();
-          //  DataRow drWsInitialValues = dtWsInitialValues.NewRow();
             dtWsInitialValues.Columns.Add(colCmId);
             dtWsInitialValues.Columns.Add(colWsId);
             dtWsInitialValues.Columns.Add(colWsNetwork);
@@ -69,8 +70,6 @@ namespace Coopetition
            // dtWsInitialValues.Columns.Add(colWsTaskFee);
            // dtWsInitialValues.Columns.Add(colWsProvidedQoS);
 
-           // dtTaskInitialValues = new DataTable();
-           // DataRow drTaskInitialValues = dtTaskInitialValues.NewRow();
             dtTaskInitialValues.Columns.Add(colTaskId);
             dtTaskInitialValues.Columns.Add(colTaskQoS);
             dtTaskInitialValues.Columns.Add(colTaskFee);
@@ -423,13 +422,58 @@ namespace Coopetition
                 Simulation(i + 1);
                 long ticks = DateTime.Now.Ticks;
                 excel.SaveDocument("coopetition_" + i.ToString() + "_" + ticks + ".xls");
+
+                double totBudget = 0; 
+                double totRep = 0;
+                for (int j = 0; j < Communities[0].Members.Count; j++)
+                {
+                    totBudget += Communities[0].Members[j].Webservice.Budget;
+                    totRep += Communities[0].Members[j].Webservice.Reputation;
+                }
+                avgBudget.Add((double)totBudget / Communities[0].Members.Count);
+                totalBudget.Add(totBudget);
+                avgReputation.Add((double)totRep / Communities[0].Members.Count);
+
                 ReleaseTasks();
             }
             long end = DateTime.Now.Ticks;
             outputLog.AppendText("Simulation took: " + (int)((end-start)/10000) + " ms\n");
             outputLog.AppendText("Done!\n");
             outputLog.ScrollToCaret();
+            CreateGraphInput(simulationType);
+
+            avgBudget.Clear();
+            totalBudget.Clear();
+            avgReputation.Clear();
+
             MessageBox.Show("Done!");
+        }
+
+        public void CreateGraphInput(Constants.SimulationType simulationType)
+        { 
+            ExcelManipulation excelGraph = new ExcelManipulation();
+            excelGraph.CreateExcelFile();
+            int grrow = 1;
+            int grcol = 1;
+            excelGraph.createHeaders(grrow, grcol, "Run No", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Simulation Type", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Total Budget", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Average Budget", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Average Reputation", "A", "B", 2, true, 10, "n");
+
+            for (int i = 0; i < avgBudget.Count; i++)
+            {
+                grrow++;
+                grcol = 1;
+                excelGraph.InsertData(grrow, grcol, i.ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, simulationType.ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, totalBudget[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, avgBudget[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, avgReputation[i].ToString(), "", "", "");
+            }
+
+            long ticks = DateTime.Now.Ticks;
+            excelGraph.SaveDocument("coopetitionGraph_" + simulationType + "_" + ticks + ".xls");
         }
 
     }

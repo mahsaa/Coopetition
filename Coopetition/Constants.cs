@@ -33,7 +33,7 @@ namespace Coopetition
         public static int NumberOfCommunities = 5;
         public static int NumberOfUsers = 1000;
         public static int NumberOfTasks = 1000;
-        public static int NumberOfRuns = 10;
+        public static int NumberOfRuns = 100;
 
         public static double CoopetitiveWebservicesPercentage = 0.6;
 

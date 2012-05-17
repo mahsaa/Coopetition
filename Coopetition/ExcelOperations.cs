@@ -61,7 +61,7 @@ namespace Coopetition
             false, false, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlShared,
             null, null, null, null, null);
             
-            KillExcelProcess();
+             KillExcelProcess();
         }
 
         private void KillExcelProcess()
