@@ -19,6 +19,8 @@ namespace Coopetition
         public static List<double> avgBudget = new List<double>();
         public static List<double> totalBudget = new List<double>();
         public static List<double> avgReputation = new List<double>();
+        public static List<double> maxReputation = new List<double>();
+        public static List<double> minReputation = new List<double>();
 
         public static int row = 1;
         public static int col = 1;
@@ -425,14 +427,22 @@ namespace Coopetition
 
                 double totBudget = 0; 
                 double totRep = 0;
+                double maxRep = 0;
+                double minRep = 1;
                 for (int j = 0; j < Communities[0].Members.Count; j++)
                 {
                     totBudget += Communities[0].Members[j].Webservice.Budget;
                     totRep += Communities[0].Members[j].Webservice.Reputation;
+                    if (Communities[0].Members[j].Webservice.Reputation > maxRep)
+                        maxRep = Communities[0].Members[j].Webservice.Reputation;
+                    if (Communities[0].Members[j].Webservice.Reputation < minRep)
+                        minRep = Communities[0].Members[j].Webservice.Reputation;
                 }
                 avgBudget.Add((double)totBudget / Communities[0].Members.Count);
                 totalBudget.Add(totBudget);
                 avgReputation.Add((double)totRep / Communities[0].Members.Count);
+                minReputation.Add(minRep);
+                maxReputation.Add(maxRep);
 
                 ReleaseTasks();
             }
@@ -445,6 +455,8 @@ namespace Coopetition
             avgBudget.Clear();
             totalBudget.Clear();
             avgReputation.Clear();
+            maxReputation.Clear();
+            minReputation.Clear();
 
             MessageBox.Show("Done!");
         }
@@ -460,6 +472,8 @@ namespace Coopetition
             excelGraph.createHeaders(grrow, ++grcol, "Total Budget", "A", "B", 2, true, 10, "n");
             excelGraph.createHeaders(grrow, ++grcol, "Average Budget", "A", "B", 2, true, 10, "n");
             excelGraph.createHeaders(grrow, ++grcol, "Average Reputation", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Min Reputation", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Max Reputation", "A", "B", 2, true, 10, "n");
 
             for (int i = 0; i < avgBudget.Count; i++)
             {
@@ -470,6 +484,8 @@ namespace Coopetition
                 excelGraph.InsertData(grrow, ++grcol, totalBudget[i].ToString(), "", "", "");
                 excelGraph.InsertData(grrow, ++grcol, avgBudget[i].ToString(), "", "", "");
                 excelGraph.InsertData(grrow, ++grcol, avgReputation[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, minReputation[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, maxReputation[i].ToString(), "", "", "");
             }
 
             long ticks = DateTime.Now.Ticks;
