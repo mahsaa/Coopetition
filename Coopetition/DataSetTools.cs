@@ -26,7 +26,7 @@ namespace Coopetition
         public List<DataSetWebService> parseDateSet(String fileName)
         {
 
-            List<DataSetWebService> dataSet = new List<DataSetWebService>();
+            dataSet = new List<DataSetWebService>();
             int count = 0;
 
             StreamReader FileStreamReader;
@@ -100,8 +100,7 @@ namespace Coopetition
             Environment.outputLog.AppendText("Parsed " + count + " Web Services from file " + fileName + "\n");
 
             FileStreamReader.Close();
-            this.dataSet = dataSet;
-            return dataSet;            
+            return getAllWebServicesWithQoS();       
         }
 
         public double calculateQoSofOneWebService(DataSetWebService dsWebService)
@@ -125,6 +124,15 @@ namespace Coopetition
             return average;
         }
 
+        public List<DataSetWebService> getAllWebServicesWithQoS () 
+        {
+            List<DataSetWebService> dataSetQoS = new List<DataSetWebService>();
+            foreach (DataSetWebService dsWebService in dataSet) {
+                dsWebService.QoS = calculateQoSofOneWebService(dsWebService);
+                dataSetQoS.Add(dsWebService);
+            }
+            return dataSetQoS;
+        }
     }   
 
 }
