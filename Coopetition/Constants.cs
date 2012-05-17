@@ -18,15 +18,14 @@ namespace Coopetition
         { 
             Coopetitive = 1,
             JustCompetitive,
-            JustCooperative,
-            Nothing
+            Random
         }
 
         public enum SimulationType
         {
-            Cooperative = 1,
-            AllRandom,
-            AllCompete
+            Coopetitive = 1,
+            AllCompetitive,
+            AllRandom
         }
 
         public const string BaseDirectory = @"C:\Projects\Thesis\Coopetition\Results\";

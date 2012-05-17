@@ -17,7 +17,6 @@ namespace Coopetition
         public static ExcelManipulation excel = new ExcelManipulation();
         public static int row = 1;
         public static int col = 1;
-        public static Coopetition.Constants.SimulationType overAllStrategy = Coopetition.Constants.SimulationType.Cooperative;
 
         public static DataTable dtWsInitialValues = new DataTable();
        // public static DataRow drWsInitialValues;
@@ -104,14 +103,14 @@ namespace Coopetition
             dtWsInitialValues.Rows.Add(drWsInitialValues);
         }
 
-        public void Initialization(Constants.Strategy strategy)
+        public void Initialization(Constants.SimulationType simulationType)
         {
             CreateInitializationTables();
 
             DataSetTools dsTools = new DataSetTools();
-            List<DataSetWebService> dataSet = dsTools.parseDateSet("c:\\projects\\QWS_Dataset_v2.txt");
+           // List<DataSetWebService> dataSet = dsTools.parseDateSet("c:\\projects\\QWS_Dataset_v2.txt");
 
-            outputLog.AppendText("/*********************** Strategy: " + strategy.ToString() + " ***********************/\n");
+            outputLog.AppendText("/*********************** Strategy: " + simulationType.ToString() + " ***********************/\n");
 
             // Generate tasks
             outputLog.AppendText("Generating Tasks...\n");
@@ -129,38 +128,20 @@ namespace Coopetition
 
             // Generate web services
             outputLog.AppendText("Generating " + Constants.NumberOfWebservices + " of Web Services...\n");
-            //int numberOfNonCoopetitiveMembers = (int)(Constants.NumberOfWebservices * Constants.CoopetitiveWebservicesPercentage);
-            //int numberOfJustCompetitiveMembers = (int)(numberOfNonCoopetitiveMembers / 2);
-            //int k = 0;
 
             for (int i = 0; i < Constants.NumberOfWebservices; i++)
             {
                 WebService ws = new WebService(i);
-                //if (k < numberOfJustCompetitiveMembers)
-                //{
-                //    ws.Type = Constants.WebserviceType.JustCompetitive;
-                //    ws.ReadyToCompete = true;
-                //    k++;
-                //}
-                //else if ((k == numberOfJustCompetitiveMembers) || (k < numberOfNonCoopetitiveMembers))
-                //{
-                //    ws.Type = Constants.WebserviceType.JustCooperative;
-                //    k++;
-                //}
-                //else if (k == numberOfNonCoopetitiveMembers)
-                //{
-                //    ws.Type = Constants.WebserviceType.Coopetitive;
-                //}
 
-                switch (strategy)
+                switch (simulationType)
 	            {
-		            case Constants.Strategy.Competition:
+		            case Constants.SimulationType.AllCompetitive:
                         ws.Type = Constants.WebserviceType.JustCompetitive;
                      break;
-                    case Constants.Strategy.Cooperation:
-                        ws.Type = Constants.WebserviceType.JustCooperative;
+                    case Constants.SimulationType.AllRandom:
+                        ws.Type = Constants.WebserviceType.Random;
                      break;
-                    case Constants.Strategy.Coopetition:
+                    case Constants.SimulationType.Coopetitive:
                         ws.Type = Constants.WebserviceType.Coopetitive;
                      break;
 	            }
@@ -174,15 +155,15 @@ namespace Coopetition
 
             // Collaboration Network Initialization
             outputLog.AppendText("Initializating Collaboration Network...\n");
-            InitializeNetworks();
+            InitializeNetworks(simulationType);
 
             // Computing thresholds and probabilities
 
         }
 
-        private void InitializeUsingDataTables(Constants.Strategy strategy)
+        private void InitializeUsingDataTables(Constants.SimulationType simulationType)
         {
-            outputLog.AppendText("/*********************** Strategy: " + strategy.ToString() + " ***********************/\n");
+            outputLog.AppendText("/*********************** Strategy: " + simulationType.ToString() + " ***********************/\n");
 
             // Generate tasks
             TaskPool.Clear();
@@ -216,15 +197,15 @@ namespace Coopetition
                 ws.GrowthFactor = double.Parse(drWs[colWsGrowthFactor].ToString());
                 ws.Reputation = double.Parse(drWs[colWsReputation].ToString());
                 ws.Budget = Int32.Parse(drWs[colWsBudget].ToString());
-                switch (strategy)
+                switch (simulationType)
                 {
-                    case Constants.Strategy.Competition:
+                    case Constants.SimulationType.AllCompetitive:
                         ws.Type = Constants.WebserviceType.JustCompetitive;
                         break;
-                    case Constants.Strategy.Cooperation:
-                        ws.Type = Constants.WebserviceType.JustCooperative;
+                    case Constants.SimulationType.AllRandom:
+                        ws.Type = Constants.WebserviceType.Random;
                         break;
-                    case Constants.Strategy.Coopetition:
+                    case Constants.SimulationType.Coopetitive:
                         ws.Type = Constants.WebserviceType.Coopetitive;
                         break;
                 }
@@ -242,31 +223,42 @@ namespace Coopetition
             InitializeNetworksUsingDataTable();
         }
 
-        private void InitializeNetworks()
+        private void InitializeNetworks(Constants.SimulationType simulationType)
         {
             Random rnd = new Random(DateTime.Now.Millisecond);
             foreach (Community community in Communities)
             {
-                int NetworkSize = (community.Members.Count - 3) / Constants.NumberOfNetworksInCommunity;
-                Environment.outputLog.AppendText("NetworkSize: " + NetworkSize + "\n");
-                Environment.outputLog.AppendText("Member Count: " + community.Members.Count + "\n");
-                for (int i = 0; i < Constants.NumberOfNetworksInCommunity; i++)
+                if ((simulationType == Constants.SimulationType.Coopetitive || simulationType == Constants.SimulationType.AllRandom))
                 {
-                    CollaborationNetwork network = new CollaborationNetwork(i, community.Id);
-                    for (int j = 0; j < NetworkSize; j++)
+                    int NetworkSize = (community.Members.Count - 3) / Constants.NumberOfNetworksInCommunity;
+                    Environment.outputLog.AppendText("NetworkSize: " + NetworkSize + "\n");
+                    Environment.outputLog.AppendText("Member Count: " + community.Members.Count + "\n");
+                    for (int i = 0; i < Constants.NumberOfNetworksInCommunity; i++)
                     {
-                        int wsId = rnd.Next(0, community.Members.Count);
-                        while (community.Members[wsId].Webservice.NetworkId != -1)
+                        CollaborationNetwork network = new CollaborationNetwork(i, community.Id);
+                        for (int j = 0; j < NetworkSize; j++)
                         {
-                            Thread.Sleep(10);
-                            wsId = rnd.Next(0, community.Members.Count);
+                            int wsId = rnd.Next(0, community.Members.Count);
+                            while (community.Members[wsId].Webservice.NetworkId != -1)
+                            {
+                                Thread.Sleep(10);
+                                wsId = rnd.Next(0, community.Members.Count);
+                            }
+                            network.MembersIds.Add(wsId);
+                            WebService ws = community.Members.Find(delegate(Community.WebServiceInfo wsInfo) { return wsInfo.Webservice.Id == wsId; }).Webservice;
+                            ws.NetworkId = network.Id;
+                            dtWsInitialValues.Rows[ws.Id][colWsNetwork] = ws.NetworkId;
                         }
-                        network.MembersIds.Add(wsId);
-                        WebService ws = community.Members.Find(delegate(Community.WebServiceInfo wsInfo) { return wsInfo.Webservice.Id == wsId; }).Webservice;
-                        ws.NetworkId = network.Id;
-                        dtWsInitialValues.Rows[ws.Id][colWsNetwork] = ws.NetworkId;
+                        community.IntraNetworks.Add(network);
+                    } 
+                }
+                else
+                {
+                    foreach (Community.WebServiceInfo wsInfo in community.Members)
+                    {
+                        // For all competitve members, there is no need to have intra networks
+                        wsInfo.Webservice.NetworkId = -1; 
                     }
-                    community.IntraNetworks.Add(network);
                 }
             }
 
@@ -318,8 +310,6 @@ namespace Coopetition
             excel.createHeaders(row, ++col, "wsTaskFee", "A", "B", 2, true, 10, "n");
             excel.createHeaders(row, ++col, "wsProvidedQoS", "A", "B", 2, true, 10, "n");
 
-            overAllStrategy = Constants.SimulationType.Cooperative;
-
             for (int j = 0; j < Communities.Count; j++)
             {
                 Community cm = Communities[j];
@@ -331,12 +321,8 @@ namespace Coopetition
                 {
                     Community.WebServiceInfo wsInfo = cm.Members[i];
                     wsInfo.Webservice.Budget -= Constants.MembershipFee;
-                    //if (wsInfo.Webservice.Type == Constants.WebserviceType.Coopetitive)
-                    //{
-                        // Checking growth factor by web services
-                        //wsInfo.Webservice.CoopetitionDecision(numberOfRun);
+                    // Checking growth factor by web services
                     wsInfo.Webservice.CoopetitionDecision(wsInfo.NumberOfTasksDone, numberOfRun);
-                    //}
                     // Insert CommunityId to the excel file 
                     excel.InsertData(row + 1, col, cm.Id.ToString(), "", "", "");
                     // Insert Webservice data to the excel file
@@ -413,15 +399,15 @@ namespace Coopetition
             }
         }
 
-        public void Run(Constants.Strategy strategy)
+        public void Run(Constants.SimulationType simulationType)
         {
             if (dtWsInitialValues.Rows.Count == 0)
             {
-                Initialization(strategy);
+                Initialization(simulationType);
             }
             else
             {
-                InitializeUsingDataTables(strategy);
+                InitializeUsingDataTables(simulationType);
             }
 
             long start = DateTime.Now.Ticks;

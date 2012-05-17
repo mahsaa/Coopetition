@@ -56,9 +56,9 @@
             // 
             this.cboStrategies.FormattingEnabled = true;
             this.cboStrategies.Items.AddRange(new object[] {
-            "Just Competitive",
-            "Just Cooperative",
-            "Coopetitive"});
+            "Coopetitive",
+            "All Competitive",
+            "All random"});
             this.cboStrategies.Location = new System.Drawing.Point(128, 429);
             this.cboStrategies.Name = "cboStrategies";
             this.cboStrategies.Size = new System.Drawing.Size(121, 21);

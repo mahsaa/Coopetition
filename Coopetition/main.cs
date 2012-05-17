@@ -26,14 +26,14 @@ namespace Coopetition
             Environment.outputLog = outputLog;
             switch (cboStrategies.SelectedItem.ToString())
             {
-                case "Just Competitive":
-                    new Environment().Run(Constants.Strategy.Competition);
+                case "All Competitive":
+                    new Environment().Run(Constants.SimulationType.AllCompetitive);
                     break;
-                case "Just Cooperative":
-                    new Environment().Run(Constants.Strategy.Cooperation);
+                case "All random":
+                    new Environment().Run(Constants.SimulationType.AllRandom);
                     break;
                 case "Coopetitive":
-                    new Environment().Run(Constants.Strategy.Coopetition);
+                    new Environment().Run(Constants.SimulationType.Coopetitive);
                     break;
             }
         }

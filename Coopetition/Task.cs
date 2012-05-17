@@ -43,8 +43,9 @@ namespace Coopetition
         public Task(int _id)
         {
             id = _id;
-            Random rnd = new Random(DateTime.Now.Millisecond);            
-            double q = Math.Round(rnd.NextDouble(), 2);
+            Random rnd = new Random(DateTime.Now.Millisecond);
+            Thread.Sleep(5);
+            double q = Math.Round(rnd.NextDouble(), 4);
             qos = Constants.TaskQoS_LowerBound + (Constants.TaskQoS_UpperBound - Constants.TaskQoS_LowerBound) * q;        
             fee = rnd.Next(Constants.TaskFee_LowerBound, Constants.TaskFee_UpperBound);
             assigned = false;
