@@ -19,6 +19,7 @@ namespace Coopetition
         private double documentation;
         private String serviceName;
         private String wSDLAddress;
+        private double qos;
 
 
         public double ResponseTime
@@ -85,6 +86,12 @@ namespace Coopetition
         {
             get { return wSDLAddress; }
             set { wSDLAddress = value; }
+        }
+
+        public double QoS
+        {
+            get { return qos; }
+            set { qos = value; }
         }
 
 
