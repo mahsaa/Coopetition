@@ -115,9 +115,10 @@ namespace Coopetition
             this.id = _id;
 
             Random rnd = new Random(DateTime.Now.Millisecond);
-            Thread.Sleep(5);
-            double q = Math.Round(rnd.NextDouble(), 4);
-            qos = Constants.WebserviceQoS_LowerBound + (Constants.WebserviceQoS_UpperBound - Constants.WebserviceQoS_LowerBound) * q;
+           // Thread.Sleep(5);
+           // double q = Math.Round(rnd.NextDouble(), 4);
+           // qos = Constants.WebserviceQoS_LowerBound + (Constants.WebserviceQoS_UpperBound - Constants.WebserviceQoS_LowerBound) * q;
+            qos = Environment.dataSet[_id].QoS;
 
             budget = rnd.Next(Constants.WebserviceBudget_LowerBound, Constants.WebserviceBudget_UpperBound);
 

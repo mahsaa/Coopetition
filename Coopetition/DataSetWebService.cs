@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Coopetition
 {
-    class DataSetWebService
+    public class DataSetWebService
     {
 
         private double responseTime;

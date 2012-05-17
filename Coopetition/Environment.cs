@@ -44,6 +44,8 @@ namespace Coopetition
         public static DataColumn colTaskFee = new DataColumn("taskFee");
         public static DataColumn colTaskAssigned = new DataColumn("taskAssigned");
 
+        public static List<DataSetWebService> dataSet;
+
         public static RichTextBox outputLog;
 
         public void CreateInitializationTables()
@@ -108,7 +110,7 @@ namespace Coopetition
             CreateInitializationTables();
 
             DataSetTools dsTools = new DataSetTools();
-           // List<DataSetWebService> dataSet = dsTools.parseDateSet("c:\\projects\\QWS_Dataset_v2.txt");
+            dataSet = dsTools.parseDateSet("c:\\projects\\QWS_Dataset_v2.txt");
 
             outputLog.AppendText("/*********************** Strategy: " + simulationType.ToString() + " ***********************/\n");
 
