@@ -222,13 +222,16 @@ namespace Coopetition
             {
                 notAssignedTasks[i].Assigned = true;
                 WebServiceInfo wsInfo = competitiveMembers.Find(delegate(WebServiceInfo winfo) { return winfo.Webservice.Id == indices[i]; });
-                wsInfo.NumberOfOfferedTasks++;
-                wsInfo.CurrentIfOfferedTask = true;
-                wsInfo.NumberOfAcceptedTasks++;
-                wsInfo.CurrentIfAcceptedTask = true;
-                wsInfo.CurrentAssignedTask = notAssignedTasks[i];
-                Environment.outputLog.AppendText(" " + wsInfo.Webservice.Id + " ");
-                k = i;
+                if (wsInfo.Webservice.Reputation >= Constants.ReputationThreshold)
+                {
+                    wsInfo.NumberOfOfferedTasks++;
+                    wsInfo.CurrentIfOfferedTask = true;
+                    wsInfo.NumberOfAcceptedTasks++;
+                    wsInfo.CurrentIfAcceptedTask = true;
+                    wsInfo.CurrentAssignedTask = notAssignedTasks[i];
+                    Environment.outputLog.AppendText(" " + wsInfo.Webservice.Id + " ");
+                    k = i;
+                }
             }
 
             Environment.outputLog.AppendText(" got the job\n");
@@ -265,6 +268,7 @@ namespace Coopetition
         {
             foreach (WebServiceInfo wsInfo in members)
             {
+                
                 CollaborationNetwork wsnetwork = this.intraNetworks.Find(delegate(CollaborationNetwork net) { return net.Id == wsInfo.Webservice.NetworkId; });
                 
                 if (wsInfo.CurrentIfOfferedTask)
@@ -283,9 +287,11 @@ namespace Coopetition
                                     if (ws.IsCollaborated)
                                     {
                                         ws.Reputation += (totalReward * ws.TaskPortionDone);
+                                        Environment.outputLog.AppendText("web service " + ws.Id + " got reward!\n");
                                     }
                                 }
                             }
+                            Environment.outputLog.AppendText("web service " + wsInfo.Webservice.Id + " got reward!\n");
                         }
                         else
                         {
@@ -299,9 +305,11 @@ namespace Coopetition
                                     if (ws.IsCollaborated)
                                     {
                                         ws.Reputation -= (totalPenalty * ws.TaskPortionDone);
+                                        Environment.outputLog.AppendText("web service " + ws.Id + " got penalized!\n");
                                     }
                                 }
                             }
+                            Environment.outputLog.AppendText("web service " + wsInfo.Webservice.Id + " got penalized!\n");
                         }
 
                         // Maintains the reputation constraints

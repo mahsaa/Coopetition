@@ -22,6 +22,8 @@ namespace Coopetition
         private int communityId;
         private Constants.WebserviceType type = Constants.WebserviceType.Random;
         private int totalIncome;
+        private int numberOfCompetitions;
+        private double competedProbability;
 
         public int Id 
         { 
@@ -107,6 +109,18 @@ namespace Coopetition
             set { totalIncome = value; } 
         }
 
+        public int NumberOfCompetitions 
+        {
+            get { return numberOfCompetitions; }
+            set { numberOfCompetitions = value; } 
+        }
+
+        public double CompetedProbability 
+        {
+            get { return competedProbability; }
+            set { competedProbability = value; } 
+        }
+
         public WebService()
         { }
 
@@ -150,14 +164,18 @@ namespace Coopetition
                 if (this.growthFactor >= Constants.CompetitionThreshold)
                 {
                     this.readyToCompete = true;
+                    this.numberOfCompetitions++;
+                    this.competedProbability = (double)this.numberOfCompetitions / numberOfRun;
                 } 
             }
             else if (this.type == Constants.WebserviceType.JustCompetitive)
             {
                 this.readyToCompete = true;
+                this.numberOfCompetitions++;
+                this.competedProbability = (double)numberOfCompetitions / numberOfRun;
             }
 
-            Environment.outputLog.AppendText("Web service " + this.id + "'s NTD: " + numberOfTasksDone + " GrowthFactor: " + this.growthFactor + " TotalIncome: " + totalIncome + "\n");
+            Environment.outputLog.AppendText("Web service " + this.id + "'s NTD: " + numberOfTasksDone + " GrowthFactor: " + this.growthFactor + " TotalIncome: " + totalIncome + " Competition Probability: " + competedProbability + "\n");
         }
 
         public void StartDoingTask(Task task, Community community)
