@@ -24,6 +24,7 @@ namespace Coopetition
         private int totalIncome;
         private int numberOfCompetitions;
         private double competedProbability;
+        private int numberOfRewarded;
 
         public int Id 
         { 
@@ -121,6 +122,12 @@ namespace Coopetition
             set { competedProbability = value; } 
         }
 
+        public int NumberOfRewarded
+        {
+            get { return numberOfRewarded; }
+            set { numberOfRewarded = value; }
+        }
+
         public WebService()
         { }
 
@@ -134,7 +141,8 @@ namespace Coopetition
            // qos = Constants.WebserviceQoS_LowerBound + (Constants.WebserviceQoS_UpperBound - Constants.WebserviceQoS_LowerBound) * q;
             qos = Environment.dataSet[_id].QoS;
 
-            budget = rnd.Next(Constants.WebserviceBudget_LowerBound, Constants.WebserviceBudget_UpperBound);
+           // budget = rnd.Next(Constants.WebserviceBudget_LowerBound, Constants.WebserviceBudget_UpperBound);
+            budget = Constants.WebserviceDefaultBudget;
 
             Thread.Sleep(5);
             double g = Math.Round(rnd.NextDouble(), 4);
@@ -165,16 +173,17 @@ namespace Coopetition
                 {
                     this.readyToCompete = true;
                     this.numberOfCompetitions++;
-                    this.competedProbability = (double)this.numberOfCompetitions / Constants.NumberOfRuns;
+                   // this.competedProbability = (double)this.numberOfCompetitions / Constants.NumberOfRuns;
                 } 
             }
             else if (this.type == Constants.WebserviceType.JustCompetitive)
             {
                 this.readyToCompete = true;
                 this.numberOfCompetitions++;
-                this.competedProbability = (double)numberOfCompetitions / Constants.NumberOfRuns;
+                //this.competedProbability = (double)numberOfCompetitions / Constants.NumberOfRuns;
             }
 
+            this.competedProbability = (double)numberOfCompetitions / numberOfRun;
             Environment.outputLog.AppendText("Web service " + this.id + "'s NTD: " + numberOfTasksDone + " GrowthFactor: " + this.growthFactor + " TotalIncome: " + totalIncome + " Competition Probability: " + competedProbability + "\n");
         }
 

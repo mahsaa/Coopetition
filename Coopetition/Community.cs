@@ -287,10 +287,12 @@ namespace Coopetition
                                     if (ws.IsCollaborated)
                                     {
                                         ws.Reputation += (totalReward * ws.TaskPortionDone);
+                                        ws.NumberOfRewarded++;
                                         Environment.outputLog.AppendText("web service " + ws.Id + " got reward!\n");
                                     }
                                 }
                             }
+                            wsInfo.Webservice.NumberOfRewarded++;
                             Environment.outputLog.AppendText("web service " + wsInfo.Webservice.Id + " got reward!\n");
                         }
                         else
