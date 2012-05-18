@@ -21,6 +21,15 @@ namespace Coopetition
         public static List<double> avgReputation = new List<double>();
         public static List<double> maxReputation = new List<double>();
         public static List<double> minReputation = new List<double>();
+        public static List<double> growthFactor5 = new List<double>();
+        public static List<double> growthFactor10 = new List<double>();
+        public static List<double> growthFactor15 = new List<double>();
+        public static List<double> compProb5 = new List<double>();
+        public static List<double> compProb10 = new List<double>();
+        public static List<double> compProb15 = new List<double>();
+        public static List<double> coopProb6 = new List<double>();
+        public static List<double> coopProb11 = new List<double>();
+        public static List<double> coopProb16 = new List<double>();
 
         public static int row = 1;
         public static int col = 1;
@@ -443,6 +452,15 @@ namespace Coopetition
                 avgReputation.Add((double)totRep / Communities[0].Members.Count);
                 minReputation.Add(minRep);
                 maxReputation.Add(maxRep);
+                growthFactor5.Add(Communities[0].Members[5].Webservice.GrowthFactor);
+                growthFactor10.Add(Communities[0].Members[10].Webservice.GrowthFactor);
+                growthFactor15.Add(Communities[0].Members[15].Webservice.GrowthFactor);
+                compProb5.Add(Communities[0].Members[5].Webservice.CompetedProbability);
+                compProb10.Add(Communities[0].Members[10].Webservice.CompetedProbability);
+                compProb15.Add(Communities[0].Members[15].Webservice.CompetedProbability);
+                coopProb6.Add(1 - Communities[0].Members[6].Webservice.CompetedProbability);
+                coopProb11.Add(1 - Communities[0].Members[11].Webservice.CompetedProbability);
+                coopProb16.Add(1 - Communities[0].Members[16].Webservice.CompetedProbability);
 
                 ReleaseTasks();
             }
@@ -474,6 +492,15 @@ namespace Coopetition
             excelGraph.createHeaders(grrow, ++grcol, "Average Reputation", "A", "B", 2, true, 10, "n");
             excelGraph.createHeaders(grrow, ++grcol, "Min Reputation", "A", "B", 2, true, 10, "n");
             excelGraph.createHeaders(grrow, ++grcol, "Max Reputation", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Growth Factor ws5", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Growth Factor ws10", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Growth Factor ws15", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Comp prob ws5", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Comp prob ws10", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Comp prob ws15", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Coop prob ws6", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Coop prob ws11", "A", "B", 2, true, 10, "n");
+            excelGraph.createHeaders(grrow, ++grcol, "Coop prob ws16", "A", "B", 2, true, 10, "n");
 
             for (int i = 0; i < avgBudget.Count; i++)
             {
@@ -486,6 +513,15 @@ namespace Coopetition
                 excelGraph.InsertData(grrow, ++grcol, avgReputation[i].ToString(), "", "", "");
                 excelGraph.InsertData(grrow, ++grcol, minReputation[i].ToString(), "", "", "");
                 excelGraph.InsertData(grrow, ++grcol, maxReputation[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, growthFactor5[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, growthFactor10[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, growthFactor15[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, compProb5[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, compProb10[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, compProb15[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, coopProb6[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, coopProb11[i].ToString(), "", "", "");
+                excelGraph.InsertData(grrow, ++grcol, coopProb16[i].ToString(), "", "", "");
             }
 
             long ticks = DateTime.Now.Ticks;

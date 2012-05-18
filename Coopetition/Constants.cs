@@ -38,7 +38,7 @@ namespace Coopetition
 
         public static double CoopetitiveWebservicesPercentage = 0.6;
 
-        public static double CompetitionThreshold = 0.3;
+        public static double CompetitionThreshold = 0.7;
         public static int MembershipFee = 1;
         public static double CooperationFeePercentage = 0.2;
         public static double CompetitionProbability = 0.5;
@@ -81,8 +81,8 @@ namespace Coopetition
         public static double RewardCoefficient = 0.001;
         public static double RewardConstant = 0.01;
 
-        public static double PenaltyCoefficient = 0.01;
-        public static double PenaltyConstant = 0.05;
+        public static double PenaltyCoefficient = 0.001;
+        public static double PenaltyConstant = 0.01;
 
         public static int CollaborationNetworkSize_LowerBound = 2;
         public static int CollaborationNetworkSize_UpperBound = 5;
