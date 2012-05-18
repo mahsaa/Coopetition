@@ -165,14 +165,14 @@ namespace Coopetition
                 {
                     this.readyToCompete = true;
                     this.numberOfCompetitions++;
-                    this.competedProbability = (double)this.numberOfCompetitions / numberOfRun;
+                    this.competedProbability = (double)this.numberOfCompetitions / Constants.NumberOfRuns;
                 } 
             }
             else if (this.type == Constants.WebserviceType.JustCompetitive)
             {
                 this.readyToCompete = true;
                 this.numberOfCompetitions++;
-                this.competedProbability = (double)numberOfCompetitions / numberOfRun;
+                this.competedProbability = (double)numberOfCompetitions / Constants.NumberOfRuns;
             }
 
             Environment.outputLog.AppendText("Web service " + this.id + "'s NTD: " + numberOfTasksDone + " GrowthFactor: " + this.growthFactor + " TotalIncome: " + totalIncome + " Competition Probability: " + competedProbability + "\n");
