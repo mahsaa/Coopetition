@@ -82,8 +82,8 @@ namespace Coopetition
         public static double RewardCoefficient = 0.001;
         public static double RewardConstant = 0.01;
 
-        public static double PenaltyCoefficient = 0.001;
-        public static double PenaltyConstant = 0.01;
+        public static double PenaltyCoefficient = 0.01;
+        public static double PenaltyConstant = 0.05;
 
         public static int CollaborationNetworkSize_LowerBound = 2;
         public static int CollaborationNetworkSize_UpperBound = 5;
